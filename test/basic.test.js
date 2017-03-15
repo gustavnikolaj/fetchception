@@ -8,3 +8,7 @@ it('should pass a basic test', () => {
 it('should be a function', () => {
     expect(fetchception, 'to be a function');
 });
+
+it('a global fetch should be available', () => {
+    expect(fetch, 'to be a function');
+});

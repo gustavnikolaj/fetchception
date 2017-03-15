@@ -1,1 +1,1 @@
-console.log('running jest setup');
+require('whatwg-fetch');
