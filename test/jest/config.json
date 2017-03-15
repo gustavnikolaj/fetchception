@@ -1,3 +1,4 @@
 {
-  "setupTestFrameworkScriptFile": "./test/jest/setupTests.js"
+  "setupTestFrameworkScriptFile": "./test/jest/setupTests.js",
+  "testEnvironment": "jsdom"
 }
