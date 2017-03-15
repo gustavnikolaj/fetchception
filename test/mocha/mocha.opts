@@ -1,0 +1,2 @@
+--require test/mocha/setupTests.js
+test/**/*.test.js

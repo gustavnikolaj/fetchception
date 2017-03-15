@@ -1,0 +1,21 @@
+{
+  "name": "fetchception",
+  "version": "0.0.0",
+  "description": "fetch mocking",
+  "main": "index.js",
+  "scripts": {
+    "lint": "onelint",
+    "test": "npm run test-mocha && npm run test-jest && npm run lint",
+    "test-mocha": "mocha --opts test/mocha/mocha.opts",
+    "test-jest": "jest --config test/jest/config.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "19.0.2",
+    "mocha": "3.2.0",
+    "onelint": "3.0.0",
+    "unexpected": "10.26.3"
+  }
+}

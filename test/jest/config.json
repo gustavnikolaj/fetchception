@@ -1,0 +1,3 @@
+{
+  "setupTestFrameworkScriptFile": "./test/jest/setupTests.js"
+}
