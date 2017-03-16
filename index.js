@@ -40,6 +40,18 @@ function verifyRequest(actualRequest, expectedRequest) {
     return promise;
 }
 
+
+function verifyConversation(expectedExchanges, actualConversation, err) {
+    return expect(actualConversation, 'to satisfy', {
+        exchanges: expectedExchanges
+    }).then(() => {
+        if (err) {
+            // The conversations matched so we will rethrow the error
+            throw err;
+        }
+    });
+}
+
 function fetchception(mocks, promiseFactory) {
     const originalFetch = global.fetch;
     const restoreFetch = () => global.fetch = originalFetch;
@@ -95,13 +107,10 @@ function fetchception(mocks, promiseFactory) {
     }
 
     return expect.promise(() => promise)
-        .catch((err) => {
-            return expect(httpConversation, 'to satisfy', { exchanges: mocks })
-                .then(() => {
-                    // the httpConversation was satisfied rethrow original
-                    throw err;
-                });
-        })
+        .then(
+            () => verifyConversation(mocks, httpConversation),
+            (err) => verifyConversation(mocks, httpConversation, err)
+        )
         .finally(() => restoreFetch());
 }
 

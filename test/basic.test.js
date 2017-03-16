@@ -91,3 +91,32 @@ it('should fail when request is not matching', () => {
     //     () => fetch('/api/bar')
     // );
 });
+
+
+it('should fail when all requests are not made', () => {
+    return expect(() => fetchception([
+        { request: '/api/bar', response: { statusCode: 200 } },
+        { request: '/api/foo', response: { statusCode: 200 } }
+    ], () => fetch('/api/bar')), 'to error', [
+        'expected',
+        'GET /api/bar',
+        '',
+        'HTTP/1.1 200 OK',
+        'to satisfy',
+        '{',
+        '  exchanges: [',
+        "    { request: '/api/bar', response: ... },",
+        "    { request: '/api/foo', response: ... }",
+        '  ]',
+        '}',
+        '',
+        'GET /api/bar',
+        '',
+        'HTTP/1.1 200 OK',
+        '',
+        '// missing:',
+        '// GET /api/foo',
+        '//',
+        '// 200'
+    ].join('\n'));
+});
