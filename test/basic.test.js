@@ -32,3 +32,28 @@ it('should fail if a promise is not returned', () => {
         'fetchception: You must return a promise from the supplied function.'
     );
 });
+
+it('should swap out fetch for the duration of fetchception', () => {
+    const originalFetch = fetch;
+    return expect(() => fetchception([], () => {
+        return expect(originalFetch, 'not to be', fetch);
+    }), 'not to error').then(() => {
+        return expect(originalFetch, 'to be', fetch);
+    });
+});
+
+it('should pass with a basic mock', () => fetchception([
+    {
+        request: '/api/foo',
+        response: {
+            statusCode: 200,
+            body: { foo: 'bar' }
+        }
+    }
+], () => {
+    return fetch('/api/foo')
+        .then(res => res.json())
+        .then(res => expect(res, 'to satisfy', {
+            foo: 'bar'
+        }));
+}));
