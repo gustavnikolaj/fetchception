@@ -64,13 +64,23 @@ function fetchception(expectedExchanges, promiseFactory) {
     const originalFetch = global.fetch;
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
-    global.fetch = (url, opts) => {
-        const responseProperties = expectedExchanges[0].response;
-        const requestProperties = expectedExchanges[0].request;
-        const actualRequest = createActualRequestModel(url, opts);
-        const mockResponse = createMockResponse(responseProperties);
 
-        return verifyRequest(actualRequest, requestProperties).then(
+    var exchangeIndex = 0;
+    function getNextExchange() {
+        const exchange = expectedExchanges[exchangeIndex] || {};
+        exchangeIndex += 1;
+        return {
+            request: exchange.request,
+            response: exchange.response
+        };
+    }
+
+    global.fetch = (url, opts) => {
+        const currentExchange = getNextExchange();
+        const actualRequest = createActualRequestModel(url, opts);
+        const mockResponse = createMockResponse(currentExchange.response);
+
+        return verifyRequest(actualRequest, currentExchange.request).then(
             res => {
                 var responseBody = mockResponse._body;
 

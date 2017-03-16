@@ -160,3 +160,18 @@ it('should fail when more requests are made', () => {
         '// HTTP/1.1 200 OK'
     ].join('\n'));
 });
+
+it('should fail if any requests are made with no exchanges defined', () => {
+    return expect(() => fetchception([], () => fetch('/api/foo')), 'to error', [
+        'expected',
+        'GET /api/foo',
+        '',
+        'HTTP/1.1 200 OK',
+        'to satisfy { exchanges: [] }',
+        '',
+        '// should be removed:',
+        '// GET /api/foo',
+        '//',
+        '// HTTP/1.1 200 OK'
+    ].join('\n'));
+});
