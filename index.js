@@ -90,14 +90,16 @@ function fetchception(expectedExchanges, promiseFactory) {
         const actualRequest = createActualRequestModel(url, opts);
         const mockResponse = createMockResponse(currentExchange.response);
 
+        var responseBody = mockResponse._body;
+
+        if (responseBody && typeof responseBody === 'object') {
+            responseBody = JSON.stringify(responseBody);
+            mockResponse.headers.set('Content-Type', 'application/json');
+        }
+
         return verifyRequest(actualRequest, currentExchange.request).then(
             res => {
-                var responseBody = mockResponse._body;
 
-                if (responseBody && typeof responseBody === 'object') {
-                    responseBody = JSON.stringify(responseBody);
-                    mockResponse.headers.set('Content-Type', 'application/json');
-                }
 
                 httpConversation.exchanges.push(new messy.HttpExchange({
                     request: actualRequest,
