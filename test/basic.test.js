@@ -67,6 +67,21 @@ it('should pass with a basic mock', () => fetchception([
         }));
 }));
 
+it('should allow passing a single exchange pair directly', () => fetchception({
+    request: '/api/foo',
+    response: {
+        statusCode: 200,
+        body: { foo: 'bar' }
+    }
+}, () => {
+    return fetch('/api/foo')
+        .then(res => res.json())
+        .then(res => expect(res, 'to equal', {
+            foo: 'bar'
+        }));
+}));
+
+
 it('should fail when request is not matching', () => {
     return expect(() => fetchception(
         [{ request: '/api/foo', response: { statusCode: 200 } }],

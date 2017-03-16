@@ -52,13 +52,21 @@ function verifyConversation(expectedExchanges, actualConversation, err) {
     });
 }
 
-function fetchception(mocks, promiseFactory) {
+function fetchception(expectedExchanges, promiseFactory) {
+    if (
+        expectedExchanges &&
+        typeof expectedExchanges === 'object' &&
+        !Array.isArray(expectedExchanges)
+    ) {
+        expectedExchanges = [expectedExchanges];
+    }
+
     const originalFetch = global.fetch;
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
     global.fetch = (url, opts) => {
-        const responseProperties = mocks[0].response;
-        const requestProperties = mocks[0].request;
+        const responseProperties = expectedExchanges[0].response;
+        const requestProperties = expectedExchanges[0].request;
         const actualRequest = createActualRequestModel(url, opts);
         const mockResponse = createMockResponse(responseProperties);
 
@@ -108,8 +116,8 @@ function fetchception(mocks, promiseFactory) {
 
     return expect.promise(() => promise)
         .then(
-            () => verifyConversation(mocks, httpConversation),
-            (err) => verifyConversation(mocks, httpConversation, err)
+            () => verifyConversation(expectedExchanges, httpConversation),
+            (err) => verifyConversation(expectedExchanges, httpConversation, err)
         )
         .finally(() => restoreFetch());
 }
