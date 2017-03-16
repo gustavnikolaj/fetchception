@@ -120,3 +120,28 @@ it('should fail when all requests are not made', () => {
         '// 200'
     ].join('\n'));
 });
+
+it('should fail when more requests are made', () => {
+    return expect(() => fetchception([
+        { request: '/api/foo', response: { statusCode: 200 } }
+    ], () => fetch('/api/foo').then(() => fetch('/api/bar'))), 'to error', [
+        'expected',
+        'GET /api/foo',
+        '',
+        'HTTP/1.1 200 OK',
+        '',
+        'GET /api/bar',
+        '',
+        'HTTP/1.1 200 OK',
+        "to satisfy { exchanges: [ { request: '/api/foo', response: ... } ] }",
+        '',
+        'GET /api/foo',
+        '',
+        'HTTP/1.1 200 OK',
+        '',
+        '// should be removed:',
+        '// GET /api/bar',
+        '//',
+        '// HTTP/1.1 200 OK'
+    ].join('\n'));
+});
