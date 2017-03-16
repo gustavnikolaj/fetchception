@@ -53,6 +53,16 @@ function verifyConversation(expectedExchanges, actualConversation, err) {
 }
 
 function fetchception(expectedExchanges, promiseFactory) {
+    // When the caller left out the expectedExchanges assume they meant []
+    if (
+        typeof promiseFactory === 'undefined' &&
+        typeof expectedExchanges === 'function'
+    ) {
+        promiseFactory = expectedExchanges;
+        expectedExchanges = [];
+    }
+
+    // Allow passing a single exchange pair without wrapping it in an object.
     if (
         expectedExchanges &&
         typeof expectedExchanges === 'object' &&
