@@ -1,17 +1,8 @@
 const http = require('http');
 const messy = require('messy');
-// const expect = require('unexpected')
-//     .clone()
-//     .use(require('unexpected-messy'));
-
-// export a promise factory for it methods
-
-// install fetch mock
-// validate fetch requests
-
-// reject fetch promise when the requests don't match
-
-// tear down fetch mock
+const expect = require('unexpected')
+    .clone()
+    .use(require('unexpected-messy'));
 
 function createMockResponse(responseProperties) {
     if (typeof responseProperties === 'object' && responseProperties.body && typeof responseProperties.body === 'string') {
@@ -27,45 +18,94 @@ function createMockResponse(responseProperties) {
     return mockResponse;
 }
 
+// function createErrorResponse() {
+//     const response = new global.Response(null, {status: 0, statusText: ''});
+//     response.type = 'error';
+//     return response;
+// }
+
+function createActualRequestModel(url, opts) {
+    const requestOptions = Object.assign({ url, method: 'GET' }, opts);
+    return new messy.HttpRequest(requestOptions);
+};
+
+function verifyRequest(actualRequest, expectedRequest) {
+    // Handle potential oathbreaking of the assertion.
+    var promise;
+    try {
+        promise = expect(actualRequest, 'to satisfy', expectedRequest);
+    } catch (e) {
+        promise = Promise.reject(e);
+    }
+    return promise;
+}
+
 function fetchception(mocks, promiseFactory) {
     const originalFetch = global.fetch;
+    const restoreFetch = () => global.fetch = originalFetch;
+    const httpConversation = new messy.HttpConversation();
     global.fetch = (url, opts) => {
         const responseProperties = mocks[0].response;
-        const messyResponse = createMockResponse(responseProperties);
+        const requestProperties = mocks[0].request;
+        const actualRequest = createActualRequestModel(url, opts);
+        const mockResponse = createMockResponse(responseProperties);
 
-        var responseBody = messyResponse._body;
+        return verifyRequest(actualRequest, requestProperties).then(
+            res => {
+                var responseBody = mockResponse._body;
 
-        if (responseBody && typeof responseBody === 'object') {
-            responseBody = JSON.stringify(responseBody);
-            messyResponse.headers.set('Content-Type', 'application/json');
-        }
+                if (responseBody && typeof responseBody === 'object') {
+                    responseBody = JSON.stringify(responseBody);
+                    mockResponse.headers.set('Content-Type', 'application/json');
+                }
 
-        const response = new global.Response(responseBody, {
-            status: messyResponse.statusLine.statusCode,
-            statusText: messyResponse.statusLine.statusMessage,
-            headers: messyResponse.headers.valuesByName
-        });
+                httpConversation.exchanges.push(new messy.HttpExchange({
+                    request: actualRequest,
+                    response: mockResponse
+                }));
 
-        return Promise.resolve(response);
+                const response = new global.Response(responseBody, {
+                    status: mockResponse.statusLine.statusCode,
+                    statusText: mockResponse.statusLine.statusMessage,
+                    headers: mockResponse.headers.valuesByName
+                });
+
+                return response;
+            },
+            () => {
+                // the request didn't match, so we create a failing response to
+                // break the code asap
+                const error = new TypeError('Network request failed');
+
+                httpConversation.exchanges.push(new messy.HttpExchange({
+                    request: actualRequest,
+                    response: mockResponse
+                }));
+
+                throw error;
+            }
+        );
     };
-    const restoreFetch = () => global.fetch = originalFetch;
 
-    const promise = promiseFactory();
+    const promise = promiseFactory(); // TODO: handle throws
 
     if (!promise || typeof promise.then !== 'function') {
+        restoreFetch();
         throw new Error('fetchception: You must return a promise from the supplied function.');
     }
 
-    return promise.then(
-        (result) => {
-            restoreFetch();
-            return result;
-        },
-        (err) => {
-            restoreFetch();
-            throw err;
-        }
-    );
+    return expect.promise(() => promise)
+        .catch((err) => {
+            return expect(httpConversation, 'to satisfy', { exchanges: mocks })
+                .then(() => {
+                    // the httpConversation was satisfied rethrow original
+                    throw err;
+                });
+        })
+        .finally(() => restoreFetch());
 }
 
 module.exports = fetchception;
+
+// Expose the internal unexpected instance.
+module.exports.expect = expect;

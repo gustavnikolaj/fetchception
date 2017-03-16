@@ -1,5 +1,14 @@
-const expect = require('unexpected');
 const fetchception = require('../');
+const expect = require('unexpected')
+    .clone()
+    // We need to include unexpected-messy in the test suite because we assert
+    // the output. It is NOT necessary when using fetchception normally.
+    .use(require('unexpected-messy'));
+
+// Set up the preferred output width for both the internal expect as well as the
+// one we use in this test suite.
+expect.output.preferredWidth = 80;
+fetchception.expect.output.preferredWidth = 80;
 
 it('should pass a basic test', () => {
     expect('foo', 'to be ok');
@@ -53,7 +62,32 @@ it('should pass with a basic mock', () => fetchception([
 ], () => {
     return fetch('/api/foo')
         .then(res => res.json())
-        .then(res => expect(res, 'to satisfy', {
+        .then(res => expect(res, 'to equal', {
             foo: 'bar'
         }));
 }));
+
+it('should fail when request is not matching', () => {
+    return expect(() => fetchception(
+        [{ request: '/api/foo', response: { statusCode: 200 } }],
+        () => fetch('/api/bar')
+    ), 'to error', [
+        'expected',
+        'GET /api/bar',
+        '',
+        'HTTP/1.1 200 OK',
+        "to satisfy { exchanges: [ { request: '/api/foo', response: ... } ] }",
+        '',
+        'GET /api/bar // should be GET /api/foo',
+        '             //',
+        '             // -GET /api/bar',
+        '             // +GET /api/foo',
+        '',
+        '',
+        'HTTP/1.1 200 OK'
+    ].join('\n'));
+    // return fetchception(
+    //     [{ request: '/api/foo', response: { statusCode: 200 } }],
+    //     () => fetch('/api/bar')
+    // );
+});
