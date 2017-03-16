@@ -8,6 +8,14 @@
 
 // tear down fetch mock
 
-function fetchception() {}
+function fetchception(mocks, promiseFactory) {
+    const promise = promiseFactory();
+
+    if (!promise || typeof promise.then !== 'function') {
+        throw new Error('fetchception: You must return a promise from the supplied function.');
+    }
+
+    return promise;
+}
 
 module.exports = fetchception;
