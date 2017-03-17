@@ -24,6 +24,6 @@
   "dependencies": {
     "magicpen-media": "1.5.1",
     "messy": "6.13.0",
-    "unexpected-messy": "6.3.0"
+    "unexpected-messy": "6.4.0"
   }
 }

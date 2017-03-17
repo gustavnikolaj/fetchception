@@ -42,17 +42,6 @@ function verifyRequest(actualRequest, expectedRequest) {
 
 
 function verifyConversation(expectedExchanges, actualConversation, err) {
-    expectedExchanges = expectedExchanges.map(exchange => {
-        // TODO: mapping from statusCode shorthand to object notation should be
-        //       handled in messy / unexpected-messy.
-        if (typeof exchange.response === 'number') {
-            return {
-                response: { statusCode: exchange.response },
-                request: exchange.request
-            };
-        }
-        return exchange;
-    });
     return expect(actualConversation, 'to satisfy', {
         exchanges: expectedExchanges
     }).then(() => {
