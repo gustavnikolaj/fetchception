@@ -190,3 +190,10 @@ it('should fail if any requests are made with no exchanges defined (shorthand)',
         '// HTTP/1.1 200 OK'
     ].join('\n'));
 });
+
+it('should accept a statusCode as response shorthand', () => fetchception({
+    request: 'GET /foo',
+    response: 200
+}, () => {
+    return expect(() => fetch('/foo'), 'to be fulfilled');
+}));
