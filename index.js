@@ -90,7 +90,7 @@ function fetchception(expectedExchanges, promiseFactory) {
         const actualRequest = createActualRequestModel(url, opts);
         const mockResponse = createMockResponse(currentExchange.response);
 
-        var responseBody = mockResponse._body;
+        var responseBody = mockResponse.decodedBody;
 
         if (responseBody && typeof responseBody === 'object') {
             responseBody = JSON.stringify(responseBody);
