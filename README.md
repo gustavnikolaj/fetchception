@@ -1,5 +1,7 @@
 # fetchception
 
+[![Build Status](https://travis-ci.org/gustavnikolaj/fetchception.svg?branch=master)](https://travis-ci.org/gustavnikolaj/fetchception)
+
 Mock out network traffic from `fetch` in tests. Experiment based on idea from
 [fileception](https://github.com/papandreou/fileception) and
 [httpception](https://github.com/papandreou/httpception). Utilizing the great
