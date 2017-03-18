@@ -197,3 +197,14 @@ it('should accept a statusCode as response shorthand', () => fetchception({
 }, () => {
     return expect(() => fetch('/foo'), 'to be fulfilled');
 }));
+
+it('should allow specifying an already serialized JSON request body as a string', function () {
+    return expect(() => fetchception([
+        { request: '/api/foo', response: { headers: { 'Content-Type': 'application/json'}, body: '{"foo":   123}' } }
+    ], () => fetch('/api/foo')
+        .then(res => res.json())
+        .then(res => expect(res, 'to equal', {
+            foo: 123
+        }))
+    ), 'not to error');
+});

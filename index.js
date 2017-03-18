@@ -5,11 +5,6 @@ const expect = require('unexpected')
     .use(require('unexpected-messy'));
 
 function createMockResponse(responseProperties) {
-    if (typeof responseProperties === 'object' && responseProperties.body && typeof responseProperties.body === 'string') {
-        responseProperties = Object.assign({}, responseProperties);
-        responseProperties.unchunkedBody = responseProperties.body;
-        delete responseProperties.body;
-    }
     var mockResponse = new messy.HttpResponse(responseProperties);
     mockResponse.statusCode = mockResponse.statusCode || 200;
     mockResponse.protocolName = mockResponse.protocolName || 'HTTP';
@@ -90,7 +85,7 @@ function fetchception(expectedExchanges, promiseFactory) {
         const actualRequest = createActualRequestModel(url, opts);
         const mockResponse = createMockResponse(currentExchange.response);
 
-        var responseBody = mockResponse._body;
+        var responseBody = mockResponse.decodedBody;
 
         if (responseBody && typeof responseBody === 'object') {
             responseBody = JSON.stringify(responseBody);
