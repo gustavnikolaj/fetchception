@@ -4,6 +4,32 @@ const expect = require('unexpected')
     .clone()
     .use(require('unexpected-messy'));
 
+var expectWithoutFootgunProtection = expect.clone();
+// Disable the footgun protection of our Unexpected clone:
+expectWithoutFootgunProtection.notifyPendingPromise = function () {};
+
+var mockDefinitionForTheCurrentTest;
+var resolveNext;
+var promiseForAfterEach;
+var afterEachRegistered = false;
+function ensureAfterEachIsRegistered() {
+    if (!afterEachRegistered && typeof afterEach === 'function') {
+        afterEachRegistered = true;
+        afterEach(function () {
+            mockDefinitionForTheCurrentTest = undefined;
+            if (resolveNext) {
+                resolveNext();
+                resolveNext = undefined;
+                return promiseForAfterEach;
+            }
+        });
+    }
+}
+
+// When running in jasmine/node.js, afterEach is available immediately,
+// but doesn't work within the it block. Register the hook immediately:
+ensureAfterEachIsRegistered();
+
 function createMockResponse(responseProperties) {
     var mockResponse = new messy.HttpResponse(responseProperties);
     mockResponse.statusCode = mockResponse.statusCode || 200;
@@ -66,13 +92,19 @@ function fetchception(expectedExchanges, promiseFactory) {
         expectedExchanges = [expectedExchanges];
     }
 
+    if (mockDefinitionForTheCurrentTest) {
+        Array.prototype.push.apply(mockDefinitionForTheCurrentTest, expectedExchanges);
+    } else {
+        mockDefinitionForTheCurrentTest = expectedExchanges;
+    }
+
     const originalFetch = global.fetch;
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
 
     var exchangeIndex = 0;
     function getNextExchange() {
-        const exchange = expectedExchanges[exchangeIndex] || {};
+        const exchange = mockDefinitionForTheCurrentTest[exchangeIndex] || {};
         exchangeIndex += 1;
         return {
             request: exchange.request,
@@ -124,19 +156,29 @@ function fetchception(expectedExchanges, promiseFactory) {
         );
     };
 
-    const promise = promiseFactory(); // TODO: handle throws
+    if (promiseFactory) {
+        const promise = promiseFactory(); // TODO: handle throws
 
-    if (!promise || typeof promise.then !== 'function') {
-        restoreFetch();
-        throw new Error('fetchception: You must return a promise from the supplied function.');
+        if (!promise || typeof promise.then !== 'function') {
+            restoreFetch();
+            throw new Error('fetchception: You must return a promise from the supplied function.');
+        }
+        resolveNext = false;
+        return expect.promise(() => promise)
+            .then(
+                () => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation),
+                (err) => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation, err)
+            )
+            .finally(() => restoreFetch());
+    } else {
+        promiseForAfterEach = expectWithoutFootgunProtection(function () {
+            return expect.promise((resolve, reject) => {
+                resolveNext = resolve;
+            });
+        }, 'not to error').then(
+            () => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation)
+        );
     }
-
-    return expect.promise(() => promise)
-        .then(
-            () => verifyConversation(expectedExchanges, httpConversation),
-            (err) => verifyConversation(expectedExchanges, httpConversation, err)
-        )
-        .finally(() => restoreFetch());
 }
 
 module.exports = fetchception;
