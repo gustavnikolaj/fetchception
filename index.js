@@ -177,7 +177,8 @@ function fetchception(expectedExchanges, promiseFactory) {
             });
         }, 'not to error').then(
             () => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation)
-        );
+        )
+        .finally(() => restoreFetch());
     }
 }
 
