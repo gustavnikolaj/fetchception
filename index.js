@@ -16,11 +16,11 @@ function ensureAfterEachIsRegistered() {
     if (!afterEachRegistered && typeof afterEach === 'function') {
         afterEachRegistered = true;
         afterEach(function () {
-            mockDefinitionForTheCurrentTest = undefined;
             if (resolveNext) {
                 resolveNext();
                 resolveNext = undefined;
-                return promiseForAfterEach;
+                return promiseForAfterEach
+                    .finally(() => mockDefinitionForTheCurrentTest = undefined);
             }
         });
     }
