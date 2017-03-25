@@ -11,7 +11,7 @@ describe('in afterEach mode', function () {
 
     const preamble =
         "var fetchception = require('../../');\n" +
-        "var expect = require('unexpected');\n"
+        "var expect = require('unexpected');\n";
 
     expect.addAssertion('<function> when run through mocha <assertion>', (expect, subject) => {
         expect.errorMode = 'nested';
@@ -32,27 +32,33 @@ describe('in afterEach mode', function () {
 
     it('should succeed when the correct HTTP request is made', function () {
         return expect(() => {
+            /* eslint-disable */
             it('should foo', function () {
                 fetchception({ request: 'GET /', response: 200 });
                 return fetch('/');
             });
+            /* eslint-enable */
         }, 'when run through mocha to contain', '✓ should foo\n\n  1 passing');
     });
 
     it('should fail with a diff when too few requests are made', function () {
         return expect(() => {
+            /* eslint-disable */
             it('should foo', function () {
                 fetchception({ request: 'GET /', response: 200 });
             });
+            /* eslint-enable */
         }, 'when run through mocha to match', /"after each" hook for "should foo"[\s\S]*\/\/ missing:\n\/\/ GET \/\n/);
     });
 
     it('should fail with a diff when a request does not match the mocked out traffic', function () {
         return expect(() => {
+            /* eslint-disable */
             it('should foo', function () {
                 fetchception({ request: 'GET /foo', response: 200 });
                 return fetch('/bar');
             });
+            /* eslint-enable */
         }, 'when run through mocha to contain',
                 'GET /bar // should be GET /foo\n' +
                 '         //\n' +
@@ -67,6 +73,7 @@ describe('in afterEach mode', function () {
 
     it('should fail with a diff the first test out of two fails', function () {
         return expect(() => {
+            /* eslint-disable */
             it('should foo', function () {
                 fetchception({ request: 'GET /foo', response: 200 });
                 return fetch('/bar');
@@ -76,6 +83,7 @@ describe('in afterEach mode', function () {
                 fetchception({ request: 'GET /foo', response: 200 });
                 return fetch('/foo');
             });
+            /* eslint-enable */
         }, 'when run through mocha to contain',
                 'GET /bar // should be GET /foo\n' +
                 '         //\n' +
@@ -90,6 +98,7 @@ describe('in afterEach mode', function () {
 
     it('should fail with a diff the second test out of two fails', function () {
         return expect(() => {
+            /* eslint-disable */
             it('should bar', function () {
                 fetchception({ request: 'GET /foo', response: 200 });
                 return fetch('/foo');
@@ -99,6 +108,7 @@ describe('in afterEach mode', function () {
                 fetchception({ request: 'GET /foo', response: 200 });
                 return fetch('/bar');
             });
+            /* eslint-enable */
         }, 'when run through mocha to contain',
                 'GET /bar // should be GET /foo\n' +
                 '         //\n' +
