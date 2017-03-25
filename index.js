@@ -21,6 +21,8 @@ function ensureAfterEachIsRegistered() {
                 resolveNext = undefined;
                 return promiseForAfterEach
                     .finally(() => mockDefinitionForTheCurrentTest = undefined);
+            } else {
+                mockDefinitionForTheCurrentTest = undefined;
             }
         });
     }
