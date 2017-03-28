@@ -208,3 +208,156 @@ it('should allow specifying an already serialized JSON request body as a string'
         }))
     ), 'not to error');
 });
+
+it('should mock out a single request and succeed when it is performed', function () {
+    fetchception({
+        request: 'GET /api/foo',
+        response: 200
+    });
+
+    return fetch('/api/foo');
+});
+
+it('should mock out two requests given in separate fetchception calls and succeed when they are performed', function () {
+    fetchception({
+        request: 'GET /api/foo',
+        response: 200
+    });
+
+    fetchception({
+        request: 'GET /api/bar',
+        response: 200
+    });
+
+    return fetch('/api/foo')
+        .then(() => fetch('/api/bar'));
+});
+
+it('should mock out two requests given as an array and succeed when they are performed', function () {
+    fetchception([
+        {
+            request: 'GET /api/foo',
+            response: 200
+        },
+        {
+            request: 'GET /api/bar',
+            response: 200
+        }
+    ]);
+
+    return fetch('/api/foo')
+        .then(() => fetch('/api/bar'));
+});
+
+it('should succeed', function () {
+    return fetchception({
+        request: 'GET /api/foo',
+        response: 200
+    }, () => fetch('/api/foo'));
+});
+
+it('should succeed when a single function is passed and it does not perform any HTTP requests', function () {
+    return fetchception(() => Promise.resolve());
+});
+
+it('should fail when no HTTP requests are made and there is a one mocked out', function () {
+    return expect(
+        fetchception({
+            request: 'GET /api/foo',
+            response: 200
+        }, () => Promise.resolve()),
+        'to be rejected with',
+            'expected <empty conversation>\n' +
+            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            '\n' +
+            '// missing:\n' +
+            '// GET /api/foo\n' +
+            '//\n' +
+            '// 200'
+    );
+});
+
+it('should fail when no HTTP requests are made and there is a one mocked out (given as an array)', function () {
+    return expect(
+        fetchception([
+            {
+                request: 'GET /api/foo',
+                response: 200
+            }
+        ], () => Promise.resolve()),
+        'to be rejected with',
+            'expected <empty conversation>\n' +
+            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            '\n' +
+            '// missing:\n' +
+            '// GET /api/foo\n' +
+            '//\n' +
+            '// 200'
+    );
+});
+
+describe('when queueing up mock traffic before the promise factory is invoked', function () {
+    it('should succeed', function () {
+        fetchception({
+            request: 'GET /api/foo',
+            response: 200
+        });
+
+        return fetchception([], () => fetch('/api/foo'));
+    });
+
+    it('should succeed when queueing up twice', function () {
+        fetchception({
+            request: 'GET /api/foo',
+            response: 200
+        });
+
+        fetchception({
+            request: 'GET /api/bar',
+            response: 200
+        });
+
+        return fetchception(
+            () => fetch('/api/foo')
+                .then(() => fetch('/api/bar'))
+        );
+    });
+
+    it('should succeed when additional traffic is passed to the fetchception call that launches the promise factory', function () {
+        fetchception({
+            request: 'GET /api/foo',
+            response: 200
+        });
+
+        return fetchception({
+            request: 'GET /api/bar',
+            response: 200
+        }, () => fetch('/api/foo')
+            .then(() => fetch('/api/bar'))
+        );
+    });
+
+    it('should fail with a diff', function () {
+        fetchception({
+            request: 'GET /api/foo',
+            response: 200
+        });
+        return expect(
+            fetchception(() => fetch('/api/bar')),
+            'to be rejected with',
+            'expected\n' +
+            'GET /api/bar\n' +
+            '\n' +
+            'HTTP/1.1 200 OK\n' +
+            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            '\n' +
+            'GET /api/bar // should be GET /api/foo\n' +
+            '             //\n' +
+            '             // -GET /api/bar\n' +
+            '             // +GET /api/foo\n' +
+            '\n' +
+            '\n' +
+            'HTTP/1.1 200 OK'
+        );
+    });
+});
