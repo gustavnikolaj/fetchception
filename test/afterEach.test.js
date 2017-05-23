@@ -1,3 +1,4 @@
+/*global afterAll, beforeAll*/
 const expect = require('unexpected');
 const pathModule = require('path');
 const childProcess = require('child_process');
@@ -6,8 +7,8 @@ describe('in afterEach mode', function () {
     const fs = expect.promise.promisifyAll(require('fs'));
     const tmpDir = pathModule.resolve(__dirname, 'tmp');
 
-    before(() => fs.mkdirAsync(tmpDir).catch(() => {}));
-    after(() => fs.rmdirAsync(tmpDir).catch(() => {}));
+    (typeof before === 'function' ? before : beforeAll)(() => fs.mkdirAsync(tmpDir).catch(() => {}));
+    (typeof after === 'function' ? after : afterAll)(() => fs.rmdirAsync(tmpDir).catch(() => {}));
 
     const preamble =
         "var fetchception = require('../../');\n" +
