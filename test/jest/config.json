@@ -1,5 +1,0 @@
-{
-  "setupTestFrameworkScriptFile": "./test/jest/setupTests.js",
-  "testEnvironment": "jsdom",
-  "collectCoverageFrom" : ["**/*.{js,jsx}", "!(test|coverage|node_modules)/**"]
-}

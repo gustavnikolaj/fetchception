@@ -4,11 +4,11 @@
   "description": "fetch mocking",
   "main": "index.js",
   "scripts": {
-    "coverage": "jest --config test/jest/config.json --coverage",
+    "coverage": "jest --config test/jest/jest.config.js --coverage",
     "lint": "onelint",
     "test": "npm run test-mocha && npm run test-jest && npm run lint",
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
-    "test-jest": "jest --config test/jest/config.json"
+    "test-jest": "jest --config test/jest/jest.config.js"
   },
   "keywords": [],
   "author": "",
