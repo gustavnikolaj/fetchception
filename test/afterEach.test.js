@@ -53,8 +53,8 @@ describe('in afterEach mode', function () {
                 return fetch('/');
             });
             /* eslint-enable */
-        }, 'when run through mocha to contain', '✓ should foo\n\n  1 passing')
-        .and('when run through jest to contain', '✓ should foo \(');
+        }, 'when run through mocha to contain', '✓ should foo')
+        .and('when run through jest to contain', '✓ should foo');
     });
 
     it('should fail with a diff when too few requests are made', function () {
