@@ -1,7 +1,12 @@
-/*global afterAll, beforeAll*/
+/*global afterAll, beforeAll, jasmine*/
 const expect = require('unexpected');
 const pathModule = require('path');
 const childProcess = require('child_process');
+
+// Not sure if this is really the right way to bump the timeout:
+if (typeof jasmine !== 'undefined') {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000;
+}
 
 describe('in afterEach mode', function () {
     const fs = expect.promise.promisifyAll(require('fs'));
