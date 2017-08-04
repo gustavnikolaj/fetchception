@@ -10,7 +10,7 @@ modelling, inspection and diffing of HTTP conversations from
 [unexpected-messy](https://github.com/unexpectedjs/unexpected-messy).
 
 ```js
-const fileception = require('fileception');
+const fetchception = require('fetchception');
 const assert = require('assert');
 
 it('should cleanly mock out fetch in the test', () => fetchception([
