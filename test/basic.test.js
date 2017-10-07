@@ -198,6 +198,46 @@ it('should accept a statusCode as response shorthand', () => fetchception({
     return expect(() => fetch('/foo'), 'to be fulfilled');
 }));
 
+it('should allow specifying an application/json response by passing the body as an object', function () {
+    return expect(() => fetchception([
+        { request: '/api/foo', response: { body: { foo: 123 } } }
+    ], () => fetch('/api/foo')
+        .then(res => {
+            expect(res.headers.get('Content-Type'), 'to equal', 'application/json');
+            return res.json();
+        })
+        .then(res => {
+            expect(res, 'to equal', { foo: 123 });
+        })
+    ), 'not to error');
+});
+
+// Test indirectly by inspecting the error message:
+it('should allow specifying an expected application/json request by passing the body as an object', function () {
+    return expect(() => fetchception([
+      { request: { url: '/api/foo', body: { foo: 123 } }, response: 200 }
+    ], () => fetch('/api/bar', { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ foo: 123 }) })), 'to error',
+        'expected\n' +
+        'GET /api/bar\n' +
+        'Content-Type: application/json\n' +
+        '\n' +
+        '{ foo: 123 }\n' +
+        '\n' +
+        'HTTP/1.1 200 OK\n' +
+        'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
+        '\n' +
+        'GET /api/bar // should be /api/foo\n' +
+        '             //\n' +
+        '             // -GET /api/bar\n' +
+        '             // +GET /api/foo\n' +
+        'Content-Type: application/json\n' +
+        '\n' +
+        '{ foo: 123 }\n' +
+        '\n' +
+        'HTTP/1.1 200 OK'
+    );
+});
+
 it('should allow specifying an already serialized JSON request body as a string', function () {
     return expect(() => fetchception([
         { request: '/api/foo', response: { headers: { 'Content-Type': 'application/json'}, body: '{"foo":   123}' } }
