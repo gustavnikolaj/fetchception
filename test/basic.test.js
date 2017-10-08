@@ -249,6 +249,27 @@ it('should allow specifying an already serialized JSON request body as a string'
     ), 'not to error');
 });
 
+// Test indirectly by inspecting the error message:
+it('should allow specifying the expected query string via the `query` option', function () {
+    return expect(() => fetchception([
+        { request: { url: '/api/foo', query: { foo: [ 'bar', 'quux' ] } }, response: 200 }
+    ], () => fetch('/api/bar?foo%5B0%5D=bar&foo%5B1%5D=quux')), 'to error',
+        'expected\n' +
+        'GET /api/bar?foo%5B0%5D=bar&foo%5B1%5D=quux\n' +
+        '\n' +
+        'HTTP/1.1 200 OK\n' +
+        'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
+        '\n' +
+        'GET /api/bar?foo%5B0%5D=bar&foo%5B1%5D=quux // should be /api/foo?foo%5B0%5D=bar&foo%5B1%5D=quux\n' +
+        '                                            //\n' +
+        '                                            // -GET /api/bar?foo%5B0%5D=bar&foo%5B1%5D=quux\n' +
+        '                                            // +GET /api/foo?foo%5B0%5D=bar&foo%5B1%5D=quux\n' +
+        '\n' +
+        '\n' +
+        'HTTP/1.1 200 OK'
+    );
+});
+
 it('should allow specifying the expected method as part of the request shorthand', function () {
     return expect(() => fetchception([
         { request: 'POST /api/foo', response: 200 }
