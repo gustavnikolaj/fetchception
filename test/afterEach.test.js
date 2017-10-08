@@ -68,6 +68,40 @@ describe('in afterEach mode', function () {
         .and('when run through jest to match', /FAIL[\s\S]*\/\/ missing:\n\s*\/\/ GET \/\n/);
     });
 
+    describe('when the fetchception function is called multiple times', function () {
+        it('should queue up more expected requests', function () {
+            return expect(() => {
+                /* eslint-disable */
+                it('should foo', function () {
+                    fetchception({ request: 'GET /', response: 200 });
+                    fetchception({ request: 'GET /foo', response: 200 });
+                    return fetch('/')
+                    .then(function () {
+                        return fetch('/foo');
+                    });
+                });
+                /* eslint-enable */
+            }, 'when run through mocha to contain', '✓ should foo')
+            .and('when run through jest to contain', '✓ should foo');
+        });
+
+        it('should queue up more expected requests after some have been exercised', function () {
+            return expect(() => {
+                /* eslint-disable */
+                it('should foo', function () {
+                    fetchception({ request: 'GET /', response: 200 });
+                    return fetch('/')
+                    .then(function () {
+                        fetchception({ request: 'GET /foo', response: 200 });
+                        return fetch('/foo');
+                    });
+                });
+                /* eslint-enable */
+            }, 'when run through mocha to contain', '✓ should foo')
+            .and('when run through jest to contain', '✓ should foo');
+        });
+    });
+
     it('should fail with a diff when a request does not match the mocked out traffic', function () {
         return expect(() => {
             /* eslint-disable */

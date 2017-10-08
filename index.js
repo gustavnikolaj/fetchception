@@ -157,6 +157,9 @@ function fetchception(expectedExchanges, promiseFactory) {
 
     if (mockDefinitionForTheCurrentTest) {
         Array.prototype.push.apply(mockDefinitionForTheCurrentTest, expectedExchanges);
+        if (!promiseFactory) {
+            return;
+        }
     } else {
         mockDefinitionForTheCurrentTest = expectedExchanges;
     }
@@ -165,7 +168,7 @@ function fetchception(expectedExchanges, promiseFactory) {
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
 
-    var exchangeIndex = 0;
+    let exchangeIndex = 0;
     function getNextExchange() {
         const exchange = mockDefinitionForTheCurrentTest[exchangeIndex] || {};
         exchangeIndex += 1;
