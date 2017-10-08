@@ -119,6 +119,22 @@ function fetchception(expectedExchanges, promiseFactory) {
     ) {
         expectedExchanges = [expectedExchanges];
     }
+    expectedExchanges = expectedExchanges.map(expectedExchange => {
+        // FIXME: Should be supported directly by messy
+        if (expectedExchange.request && expectedExchange.request.url) {
+            const matchMethodInUrl = expectedExchange.request.url.match(/^([A-Z]+) ([\s\S]*)$/);
+            if (matchMethodInUrl) {
+                const fixedRequest = Object.assign({}, expectedExchange.request);
+                fixedRequest.method = matchMethodInUrl[1];
+                fixedRequest.url = matchMethodInUrl[2];
+                expectedExchange = {
+                    request: fixedRequest,
+                    response: expectedExchange.response
+                };
+            }
+        }
+        return expectedExchange;
+    });
 
     if (mockDefinitionForTheCurrentTest) {
         Array.prototype.push.apply(mockDefinitionForTheCurrentTest, expectedExchanges);

@@ -249,6 +249,18 @@ it('should allow specifying an already serialized JSON request body as a string'
     ), 'not to error');
 });
 
+it('should allow specifying the expected method as part of the request shorthand', function () {
+    return expect(() => fetchception([
+        { request: 'POST /api/foo', response: 200 }
+    ], () => fetch('/api/foo', { method: 'POST' })), 'not to error');
+});
+
+it('should allow specifying the expected method as part of the request url', function () {
+    return expect(() => fetchception([
+        { request: { url: 'POST /api/foo' }, response: 200 }
+    ], () => fetch('/api/foo', { method: 'POST' })), 'not to error');
+});
+
 it('should mock out a single request and succeed when it is performed', function () {
     fetchception({
         request: 'GET /api/foo',
