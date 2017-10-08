@@ -110,6 +110,8 @@ function fetchception(expectedExchanges, promiseFactory) {
     ) {
         promiseFactory = expectedExchanges;
         expectedExchanges = [];
+    } else if (typeof expectedExchanges === 'undefined') {
+        expectedExchanges = [];
     }
 
     // Allow passing a single exchange pair without wrapping it in an object.
