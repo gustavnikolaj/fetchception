@@ -34,6 +34,9 @@ function ensureAfterEachIsRegistered() {
 ensureAfterEachIsRegistered();
 
 function createMockResponse(responseProperties) {
+    if (typeof responseProperties === 'number') {
+        responseProperties = { statusCode: responseProperties };
+    }
     responseProperties = Object.assign({ statusCode: 200 }, responseProperties);
 
     if (responseProperties.body && typeof responseProperties.body === 'object') {

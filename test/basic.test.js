@@ -208,9 +208,11 @@ it('should fail if any requests are made with no exchanges defined (shorthand)',
 
 it('should accept a statusCode as response shorthand', () => fetchception({
     request: 'GET /foo',
-    response: 200
+    response: 500
 }, () => {
-    return expect(() => fetch('/foo'), 'to be fulfilled');
+    return expect(
+        () => fetch('/foo').then(res => expect(res.status, 'to equal', 500)),
+    'to be fulfilled');
 }));
 
 it('should allow specifying an application/json response by passing the body as an object', function () {
