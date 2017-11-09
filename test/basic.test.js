@@ -299,6 +299,33 @@ it('should allow specifying the expected method as part of the request url', fun
     ], () => fetch('/api/foo', { method: 'POST' })), 'not to error');
 });
 
+describe('when matching the url with an expect.it', function () {
+    it('should succeed', function () {
+        return expect(() => fetchception([
+            { request: { url: expect.it('to begin with', '/api/foo') }, response: 200 }
+        ], () => fetch('/api/foo/bar', { method: 'POST' })), 'not to error');
+    });
+
+    it('should fail with a diff', function () {
+        return expect(
+            () => fetchception([
+                { request: { url: expect.it('to begin with', '/api/bar') }, response: 200 }
+            ], () => fetch('/api/foo', { method: 'POST' })),
+            'to be rejected with',
+            'expected\n' +
+            'POST /api/foo\n' +
+            '\n' +
+            'HTTP/1.1 200 OK\n' +
+            'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
+            '\n' +
+            'POST /api/foo // should satisfy { url: expect.it(\'to begin with\', \'/api/bar\') }\n' +
+            '\n' +
+            '\n' +
+            'HTTP/1.1 200 OK'
+        );
+    });
+});
+
 it('should mock out a single request and succeed when it is performed', function () {
     fetchception({
         request: 'GET /api/foo',

@@ -127,7 +127,7 @@ function fetchception(expectedExchanges, promiseFactory) {
     }
     expectedExchanges = expectedExchanges.map(expectedExchange => {
         // FIXME: Should be supported directly by messy
-        if (expectedExchange.request && expectedExchange.request.url) {
+        if (expectedExchange.request && typeof expectedExchange.request.url === 'string') {
             const matchMethodInUrl = expectedExchange.request.url.match(/^([A-Z]+) ([\s\S]*)$/);
             if (matchMethodInUrl) {
                 const fixedRequest = Object.assign({}, expectedExchange.request);
