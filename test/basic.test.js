@@ -318,7 +318,12 @@ describe('when matching the url with an expect.it', function () {
             'HTTP/1.1 200 OK\n' +
             'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
             '\n' +
-            'POST /api/foo // should satisfy { url: expect.it(\'to begin with\', \'/api/bar\') }\n' +
+            'POST /api/foo // url should satisfy expect.it(\'to begin with\', \'/api/bar\')\n' +
+            '              //\n' +
+            '              // expected \'/api/foo\' to begin with \'/api/bar\'\n' +
+            '              //\n' +
+            '              // /api/foo\n' +
+            '              // ^^^^^\n' +
             '\n' +
             '\n' +
             'HTTP/1.1 200 OK'
