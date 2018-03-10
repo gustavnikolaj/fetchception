@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "magicpen-media": "1.5.1",
-    "messy": "6.15.2",
+    "messy": "^6.16.0",
     "unexpected-messy": "^7.4.0"
   }
 }
