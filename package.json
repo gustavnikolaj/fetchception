@@ -1,6 +1,6 @@
 {
   "name": "fetchception",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "fetch mocking",
   "main": "index.js",
   "scripts": {
