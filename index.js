@@ -1,6 +1,5 @@
 const http = require('http');
 const messy = require('messy');
-const qs = require('qs');
 const expect = require('unexpected')
     .clone()
     .use(require('unexpected-messy'));
@@ -138,23 +137,6 @@ function fetchception(expectedExchanges, promiseFactory) {
                     response: expectedExchange.response
                 };
             }
-        }
-        // FIXME: Upstream to messy
-        if (expectedExchange.request && typeof expectedExchange.request.query !== 'undefined') {
-            const fixedRequest = Object.assign({}, expectedExchange.request);
-            if (typeof fixedRequest.query === 'object' && fixedRequest.query) {
-                var stringifiedQueryString = qs.stringify(fixedRequest.query);
-                if (stringifiedQueryString) {
-                    fixedRequest.url += (fixedRequest.url.indexOf('?') === -1 ? '?' : '&') + stringifiedQueryString;
-                }
-            } else {
-                fixedRequest.url += (fixedRequest.url.indexOf('?') === -1 ? '?' : '&') + String(fixedRequest.query);
-            }
-            delete fixedRequest.query;
-            expectedExchange = {
-                request: fixedRequest,
-                response: expectedExchange.response
-            };
         }
 
         return expectedExchange;
