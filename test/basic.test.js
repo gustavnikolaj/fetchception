@@ -91,7 +91,7 @@ it('should fail when request is not matching', () => {
         'GET /api/bar',
         '',
         'HTTP/1.1 200 OK',
-        "to satisfy { exchanges: [ { request: '/api/foo', response: ... } ] }",
+        'to satisfy { exchanges: [ { request: ..., response: ... } ] }',
         '',
         'GET /api/bar // should be GET /api/foo',
         '             //',
@@ -120,8 +120,8 @@ it('should fail when all requests are not made', () => {
         'to satisfy',
         '{',
         '  exchanges: [',
-        "    { request: '/api/bar', response: ... },",
-        "    { request: '/api/foo', response: ... }",
+        '    { request: ..., response: ... },',
+        '    { request: ..., response: ... }',
         '  ]',
         '}',
         '',
@@ -148,7 +148,7 @@ it('should fail when more requests are made', () => {
         'GET /api/bar',
         '',
         'HTTP/1.1 200 OK',
-        "to satisfy { exchanges: [ { request: '/api/foo', response: ... } ] }",
+        'to satisfy { exchanges: [ { request: ..., response: ... } ] }',
         '',
         'GET /api/foo',
         '',
@@ -243,7 +243,7 @@ it('should allow specifying an expected application/json request by passing the 
         'HTTP/1.1 200 OK\n' +
         'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
         '\n' +
-        'GET /api/bar // should be /api/foo\n' +
+        'GET /api/bar // should be GET /api/foo\n' +
         '             //\n' +
         '             // -GET /api/bar\n' +
         '             // +GET /api/foo\n' +
@@ -397,7 +397,7 @@ it('should fail when no HTTP requests are made and there is a one mocked out', f
         }, () => Promise.resolve()),
         'to be rejected with',
             'expected <empty conversation>\n' +
-            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
             '\n' +
             '// missing:\n' +
             '// GET /api/foo\n' +
@@ -416,7 +416,7 @@ it('should fail when no HTTP requests are made and there is a one mocked out (gi
         ], () => Promise.resolve()),
         'to be rejected with',
             'expected <empty conversation>\n' +
-            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
             '\n' +
             '// missing:\n' +
             '// GET /api/foo\n' +
@@ -478,7 +478,7 @@ describe('when queueing up mock traffic before the promise factory is invoked', 
             'GET /api/bar\n' +
             '\n' +
             'HTTP/1.1 200 OK\n' +
-            'to satisfy { exchanges: [ { request: \'GET /api/foo\', response: 200 } ] }\n' +
+            'to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n' +
             '\n' +
             'GET /api/bar // should be GET /api/foo\n' +
             '             //\n' +
@@ -489,4 +489,14 @@ describe('when queueing up mock traffic before the promise factory is invoked', 
             'HTTP/1.1 200 OK'
         );
     });
+});
+
+it('should support absolute urls', () => {
+    return expect(() => {
+        return fetchception({
+            request: 'GET https://pfg.tools/api/1?foo=1'
+        }, () => {
+            return fetch('https://pfg.tools/api/1?foo=1');
+        });
+    }, 'not to error');
 });

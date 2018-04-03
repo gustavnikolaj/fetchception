@@ -3,6 +3,8 @@ const messy = require('messy');
 const expect = require('unexpected')
     .clone()
     .use(require('unexpected-messy'));
+// TODO: Use the hopefully now-upstreamed version of this instead.
+const resolveExpectedRequestProperties = require('./resolveExpectedRequestProperties');
 
 var expectWithoutFootgunProtection = expect.clone();
 // Disable the footgun protection of our Unexpected clone:
@@ -158,6 +160,11 @@ function fetchception(expectedExchanges, promiseFactory) {
     const originalFetch = global.fetch;
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
+
+    mockDefinitionForTheCurrentTest = mockDefinitionForTheCurrentTest.map(mockDef => ({
+        request: resolveExpectedRequestProperties(mockDef.request),
+        response: mockDef.response
+    }));
 
     let exchangeIndex = 0;
     function getNextExchange() {
