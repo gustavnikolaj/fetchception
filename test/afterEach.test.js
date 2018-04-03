@@ -10,10 +10,11 @@ if (typeof jasmine !== 'undefined') {
 
 describe('in afterEach mode', function () {
     const fs = expect.promise.promisifyAll(require('fs'));
+    const rimrafAsync = expect.promise.promisify(require('rimraf'));
     const tmpDir = pathModule.resolve(__dirname, '..', 'tmp');
 
     (typeof before === 'function' ? before : beforeAll)(() => fs.mkdirAsync(tmpDir).catch(() => {}));
-    (typeof after === 'function' ? after : afterAll)(() => fs.rmdirAsync(tmpDir).catch(() => {}));
+    (typeof after === 'function' ? after : afterAll)(() => rimrafAsync(tmpDir).catch(() => {}));
 
     const preamble =
         "var fetchception = require('../');\n" +
