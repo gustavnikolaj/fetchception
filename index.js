@@ -105,6 +105,10 @@ function verifyConversation(expectedExchanges, actualConversation, err) {
 }
 
 function fetchception(expectedExchanges, promiseFactory) {
+    if (!global.fetch) {
+        throw new Error('fetchception: Did not find a global.fetch. Make sure that you load a fetch polyfill if you are running your tests in an environment with no native implementation.');
+    }
+
     // When the caller left out the expectedExchanges assume they meant []
     if (
         typeof promiseFactory === 'undefined' &&
