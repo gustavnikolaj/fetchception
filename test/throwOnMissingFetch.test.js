@@ -15,7 +15,7 @@ let originalFetch;
 describe('with no global fetch', () => {
     beforeEach(() => {
         originalFetch = global.fetch;
-        delete global.fetch;
+        global.fetch = undefined;
     });
 
     it('should complain if no fetch is available', () => {
