@@ -1,3 +1,2 @@
---timeout 40000
 --require test/mocha/setupTests.js
 test/**/*.test.js
