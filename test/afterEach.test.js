@@ -101,6 +101,33 @@ describe('in afterEach mode', function () {
             }, 'when run through mocha to contain', '✓ should foo')
             .and('when run through jest to contain', '✓ should foo');
         });
+
+        it('should process short hand request syntax in afterEach mode.', function () {
+            return expect(() => {
+                /* eslint-disable */
+                beforeEach(function () {
+                    fetchception();
+                });
+
+                it('should foo', function () {
+                    fetchception([
+                        {
+                            request: 'GET https://pfg.tools/api/1?PageSize=10&foo=1',
+                            response: {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: [1]
+                            }
+                        }
+                    ]);
+
+                    return fetch('https://pfg.tools/api/1?PageSize=10&foo=1');
+                });
+                /* eslint-enable */
+            }, 'when run through mocha to contain', '✓ should foo')
+            .and('when run through jest to contain', '✓ should foo');
+        });
     });
 
     it('should fail with a diff when a request does not match the mocked out traffic', function () {

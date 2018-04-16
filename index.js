@@ -10,6 +10,15 @@ var expectWithoutFootgunProtection = expect.clone();
 // Disable the footgun protection of our Unexpected clone:
 expectWithoutFootgunProtection.notifyPendingPromise = function () {};
 
+function processMockDefinitions(mockDefinitions) {
+    return mockDefinitions.map(function (mockDef) {
+        return {
+            request: resolveExpectedRequestProperties(mockDef.request),
+            response: mockDef.response
+        };
+    });
+}
+
 var mockDefinitionForTheCurrentTest;
 var resolveNext;
 var promiseForAfterEach;
@@ -161,10 +170,7 @@ function fetchception(expectedExchanges, promiseFactory) {
     const restoreFetch = () => global.fetch = originalFetch;
     const httpConversation = new messy.HttpConversation();
 
-    mockDefinitionForTheCurrentTest = mockDefinitionForTheCurrentTest.map(mockDef => ({
-        request: resolveExpectedRequestProperties(mockDef.request),
-        response: mockDef.response
-    }));
+    mockDefinitionForTheCurrentTest = processMockDefinitions(mockDefinitionForTheCurrentTest);
 
     let exchangeIndex = 0;
     function getNextExchange() {
@@ -177,6 +183,8 @@ function fetchception(expectedExchanges, promiseFactory) {
     }
 
     global.fetch = (url, opts) => {
+        mockDefinitionForTheCurrentTest = processMockDefinitions(mockDefinitionForTheCurrentTest);
+
         const currentExchange = getNextExchange();
         const actualRequest = createActualRequestModel(url, opts);
         const mockResponse = createMockResponse(currentExchange.response);
