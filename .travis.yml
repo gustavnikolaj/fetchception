@@ -1,6 +1,37 @@
 language: node_js
-script: "npm test"
-node_js:
-  - "6"
-  - "8"
-  - "9"
+node_js: "9"
+
+stages:
+  - precache # warm up cache for default Node.js version
+  - lint # lint code and docs
+  - test # all tests
+
+cache:
+  directories:
+    - ~/.npm # cache npm's cache
+
+jobs:
+  include:
+    - script: npm run coverage
+    - script: npm run test-integration
+    - script: npm run test-mocha
+
+    - &node-mocha
+      script: npm run test-mocha
+      node_js: '8'
+
+    - <<: *node-mocha
+      node_js: '6'
+
+    - &node-jest
+      script: npm run test-jest
+      node_js: '8'
+
+    - <<: *node-jest
+      node_js: '6'
+
+    - stage: precache
+      script: true
+
+    - stage: lint
+      script: npm run lint
