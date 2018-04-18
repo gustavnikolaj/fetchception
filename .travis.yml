@@ -11,7 +11,8 @@ before_install: |
     cd ~/npm && npm install npm
     cd -
   } || true
-env: PATH=~/npm/node_modules/.bin:$PATH
+  # avoids bugs around https://github.com/travis-ci/travis-ci/issues/5092
+  export PATH=~/npm/node_modules/.bin:$PATH
 install: npm ci --ignore-scripts
 cache:
   directories:
