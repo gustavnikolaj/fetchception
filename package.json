@@ -20,7 +20,7 @@
     "mocha": "3.2.0",
     "onelint": "4.0.0",
     "rimraf": "^2.6.2",
-    "unexpected": "10.36.0",
+    "unexpected": "10.38.0"
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
