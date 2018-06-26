@@ -3,6 +3,8 @@ const { JSDOM } = require("jsdom");
 const dom = new JSDOM(`<!DOCTYPE html>`);
 const window = dom.window;
 
+global.URLSearchParams = window.URLSearchParams;
+
 // Copy over all properties from window that do not yet exist on nodes global
 // over to the global object.
 // Later we might want to filter some of them, but for now it seems to work just
