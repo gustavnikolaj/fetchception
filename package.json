@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "coverage": "jest --config test/jest/jest.config.js --coverage",
-    "lint": "onelint",
+    "lint": "eslint .",
     "test": "npm run test-mocha && npm run test-jest && npm run test-integration && npm run lint",
     "test-integration": "mocha --opts test/mocha/mocha.integration.opts",
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
@@ -15,10 +15,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^5.0.1",
+    "eslint-config-pretty-standard": "^2.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-prettier": "^2.6.1",
     "jest": "^23.2.0",
     "jsdom": "9.12.0",
     "mocha": "5.2.0",
-    "onelint": "4.0.0",
+    "prettier": "^1.13.6",
     "rimraf": "^2.6.2",
     "unexpected": "10.38.0",
     "whatwg-fetch": "2.0.4"

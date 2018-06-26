@@ -1,22 +1,22 @@
-const http = require('http');
-const messy = require('messy');
-const expect = require('unexpected')
-    .clone()
-    .use(require('unexpected-messy'));
+const http = require("http");
+const messy = require("messy");
+const expect = require("unexpected")
+  .clone()
+  .use(require("unexpected-messy"));
 // TODO: Use the hopefully now-upstreamed version of this instead.
-const resolveExpectedRequestProperties = require('./resolveExpectedRequestProperties');
+const resolveExpectedRequestProperties = require("./resolveExpectedRequestProperties");
 
 var expectWithoutFootgunProtection = expect.clone();
 // Disable the footgun protection of our Unexpected clone:
-expectWithoutFootgunProtection.notifyPendingPromise = function () {};
+expectWithoutFootgunProtection.notifyPendingPromise = function() {};
 
 function processMockDefinitions(mockDefinitions) {
-    return mockDefinitions.map(function (mockDef) {
-        return {
-            request: resolveExpectedRequestProperties(mockDef.request),
-            response: mockDef.response
-        };
-    });
+  return mockDefinitions.map(function(mockDef) {
+    return {
+      request: resolveExpectedRequestProperties(mockDef.request),
+      response: mockDef.response
+    };
+  });
 }
 
 var mockDefinitionForTheCurrentTest;
@@ -24,19 +24,20 @@ var resolveNext;
 var promiseForAfterEach;
 var afterEachRegistered = false;
 function ensureAfterEachIsRegistered() {
-    if (!afterEachRegistered && typeof afterEach === 'function') {
-        afterEachRegistered = true;
-        afterEach(function () {
-            if (resolveNext) {
-                resolveNext();
-                resolveNext = undefined;
-                return promiseForAfterEach
-                    .finally(() => mockDefinitionForTheCurrentTest = undefined);
-            } else {
-                mockDefinitionForTheCurrentTest = undefined;
-            }
-        });
-    }
+  if (!afterEachRegistered && typeof afterEach === "function") {
+    afterEachRegistered = true;
+    afterEach(function() {
+      if (resolveNext) {
+        resolveNext();
+        resolveNext = undefined;
+        return promiseForAfterEach.finally(
+          () => (mockDefinitionForTheCurrentTest = undefined)
+        );
+      } else {
+        mockDefinitionForTheCurrentTest = undefined;
+      }
+    });
+  }
 }
 
 // When running in jasmine/node.js, afterEach is available immediately,
@@ -44,29 +45,37 @@ function ensureAfterEachIsRegistered() {
 ensureAfterEachIsRegistered();
 
 function createMockResponse(responseProperties) {
-    if (typeof responseProperties === 'number') {
-        responseProperties = { statusCode: responseProperties };
-    }
-    responseProperties = Object.assign({ statusCode: 200 }, responseProperties);
+  if (typeof responseProperties === "number") {
+    responseProperties = { statusCode: responseProperties };
+  }
+  responseProperties = Object.assign({ statusCode: 200 }, responseProperties);
 
-    if (responseProperties.body && typeof responseProperties.body === 'object') {
-        if (responseProperties.headers) {
-            if (!Object.keys(responseProperties.headers).some(headerName => headerName.toLowerCase() === 'content-type')) {
-                responseProperties.headers = Object.assign({
-                    'Content-Type': 'application/json'
-                }, responseProperties.headers);
-            }
-        } else {
-            responseProperties.headers = { 'Content-Type': 'application/json' };
-        }
+  if (responseProperties.body && typeof responseProperties.body === "object") {
+    if (responseProperties.headers) {
+      if (
+        !Object.keys(responseProperties.headers).some(
+          headerName => headerName.toLowerCase() === "content-type"
+        )
+      ) {
+        responseProperties.headers = Object.assign(
+          {
+            "Content-Type": "application/json"
+          },
+          responseProperties.headers
+        );
+      }
+    } else {
+      responseProperties.headers = { "Content-Type": "application/json" };
     }
+  }
 
-    var mockResponse = new messy.HttpResponse(responseProperties);
-    mockResponse.statusCode = mockResponse.statusCode || 200;
-    mockResponse.protocolName = mockResponse.protocolName || 'HTTP';
-    mockResponse.protocolVersion = mockResponse.protocolVersion || '1.1';
-    mockResponse.statusMessage = mockResponse.statusMessage || http.STATUS_CODES[mockResponse.statusCode];
-    return mockResponse;
+  var mockResponse = new messy.HttpResponse(responseProperties);
+  mockResponse.statusCode = mockResponse.statusCode || 200;
+  mockResponse.protocolName = mockResponse.protocolName || "HTTP";
+  mockResponse.protocolVersion = mockResponse.protocolVersion || "1.1";
+  mockResponse.statusMessage =
+    mockResponse.statusMessage || http.STATUS_CODES[mockResponse.statusCode];
+  return mockResponse;
 }
 
 // function createErrorResponse() {
@@ -76,172 +85,206 @@ function createMockResponse(responseProperties) {
 // }
 
 function createActualRequestModel(url, opts) {
-    const requestProperties = Object.assign({ url, method: 'GET' }, opts);
-    const requestBody = requestProperties.body;
-    if (requestBody && typeof requestBody === 'object') {
-        if (requestProperties.headers) {
-            if (!Object.keys(requestProperties.headers).some(headerName => headerName.toLowerCase() === 'content-type')) {
-                requestProperties.headers = Object.assign({
-                    'Content-Type': 'application/json'
-                }, requestProperties.headers);
-            }
-        } else {
-            requestProperties.headers = { 'Content-Type': 'application/json' };
-        }
+  const requestProperties = Object.assign({ url, method: "GET" }, opts);
+  const requestBody = requestProperties.body;
+  if (requestBody && typeof requestBody === "object") {
+    if (requestProperties.headers) {
+      if (
+        !Object.keys(requestProperties.headers).some(
+          headerName => headerName.toLowerCase() === "content-type"
+        )
+      ) {
+        requestProperties.headers = Object.assign(
+          {
+            "Content-Type": "application/json"
+          },
+          requestProperties.headers
+        );
+      }
+    } else {
+      requestProperties.headers = { "Content-Type": "application/json" };
     }
-    return new messy.HttpRequest(requestProperties);
-};
-
-function verifyRequest(actualRequest, expectedRequest) {
-    // Handle potential oathbreaking of the assertion.
-    var promise;
-    try {
-        promise = expect(actualRequest, 'to satisfy', expectedRequest);
-    } catch (e) {
-        promise = Promise.reject(e);
-    }
-    return promise;
+  }
+  return new messy.HttpRequest(requestProperties);
 }
 
+function verifyRequest(actualRequest, expectedRequest) {
+  // Handle potential oathbreaking of the assertion.
+  var promise;
+  try {
+    promise = expect(actualRequest, "to satisfy", expectedRequest);
+  } catch (e) {
+    promise = Promise.reject(e);
+  }
+  return promise;
+}
 
 function verifyConversation(expectedExchanges, actualConversation, err) {
-    return expect(actualConversation, 'to satisfy', {
-        exchanges: expectedExchanges
-    }).then(() => {
-        if (err) {
-            // The conversations matched so we will rethrow the error
-            throw err;
-        }
-    });
+  return expect(actualConversation, "to satisfy", {
+    exchanges: expectedExchanges
+  }).then(() => {
+    if (err) {
+      // The conversations matched so we will rethrow the error
+      throw err;
+    }
+  });
 }
 
 function fetchception(expectedExchanges, promiseFactory) {
-    if (!global.fetch) {
-        throw new Error('fetchception: Did not find a global.fetch. Make sure that you load a fetch polyfill if you are running your tests in an environment with no native implementation.');
-    }
+  if (!global.fetch) {
+    throw new Error(
+      "fetchception: Did not find a global.fetch. Make sure that you load a fetch polyfill if you are running your tests in an environment with no native implementation."
+    );
+  }
 
-    // When the caller left out the expectedExchanges assume they meant []
+  // When the caller left out the expectedExchanges assume they meant []
+  if (
+    typeof promiseFactory === "undefined" &&
+    typeof expectedExchanges === "function"
+  ) {
+    promiseFactory = expectedExchanges;
+    expectedExchanges = [];
+  } else if (typeof expectedExchanges === "undefined") {
+    expectedExchanges = [];
+  }
+
+  // Allow passing a single exchange pair without wrapping it in an object.
+  if (
+    expectedExchanges &&
+    typeof expectedExchanges === "object" &&
+    !Array.isArray(expectedExchanges)
+  ) {
+    expectedExchanges = [expectedExchanges];
+  }
+  expectedExchanges = expectedExchanges.map(expectedExchange => {
+    // FIXME: Should be supported directly by messy
     if (
-        typeof promiseFactory === 'undefined' &&
-        typeof expectedExchanges === 'function'
+      expectedExchange.request &&
+      typeof expectedExchange.request.url === "string"
     ) {
-        promiseFactory = expectedExchanges;
-        expectedExchanges = [];
-    } else if (typeof expectedExchanges === 'undefined') {
-        expectedExchanges = [];
-    }
-
-    // Allow passing a single exchange pair without wrapping it in an object.
-    if (
-        expectedExchanges &&
-        typeof expectedExchanges === 'object' &&
-        !Array.isArray(expectedExchanges)
-    ) {
-        expectedExchanges = [expectedExchanges];
-    }
-    expectedExchanges = expectedExchanges.map(expectedExchange => {
-        // FIXME: Should be supported directly by messy
-        if (expectedExchange.request && typeof expectedExchange.request.url === 'string') {
-            const matchMethodInUrl = expectedExchange.request.url.match(/^([A-Z]+) ([\s\S]*)$/);
-            if (matchMethodInUrl) {
-                const fixedRequest = Object.assign({}, expectedExchange.request);
-                fixedRequest.method = matchMethodInUrl[1];
-                fixedRequest.url = matchMethodInUrl[2];
-                expectedExchange = {
-                    request: fixedRequest,
-                    response: expectedExchange.response
-                };
-            }
-        }
-
-        return expectedExchange;
-    });
-
-    if (mockDefinitionForTheCurrentTest) {
-        Array.prototype.push.apply(mockDefinitionForTheCurrentTest, expectedExchanges);
-        if (!promiseFactory) {
-            return;
-        }
-    } else {
-        mockDefinitionForTheCurrentTest = expectedExchanges;
-    }
-
-    const originalFetch = global.fetch;
-    const restoreFetch = () => global.fetch = originalFetch;
-    const httpConversation = new messy.HttpConversation();
-
-    mockDefinitionForTheCurrentTest = processMockDefinitions(mockDefinitionForTheCurrentTest);
-
-    let exchangeIndex = 0;
-    function getNextExchange() {
-        const exchange = mockDefinitionForTheCurrentTest[exchangeIndex] || {};
-        exchangeIndex += 1;
-        return {
-            request: exchange.request,
-            response: exchange.response
+      const matchMethodInUrl = expectedExchange.request.url.match(
+        /^([A-Z]+) ([\s\S]*)$/
+      );
+      if (matchMethodInUrl) {
+        const fixedRequest = Object.assign({}, expectedExchange.request);
+        fixedRequest.method = matchMethodInUrl[1];
+        fixedRequest.url = matchMethodInUrl[2];
+        expectedExchange = {
+          request: fixedRequest,
+          response: expectedExchange.response
         };
+      }
     }
 
-    global.fetch = (url, opts) => {
-        mockDefinitionForTheCurrentTest = processMockDefinitions(mockDefinitionForTheCurrentTest);
+    return expectedExchange;
+  });
 
-        const currentExchange = getNextExchange();
-        const actualRequest = createActualRequestModel(url, opts);
-        const mockResponse = createMockResponse(currentExchange.response);
+  if (mockDefinitionForTheCurrentTest) {
+    Array.prototype.push.apply(
+      mockDefinitionForTheCurrentTest,
+      expectedExchanges
+    );
+    if (!promiseFactory) {
+      return;
+    }
+  } else {
+    mockDefinitionForTheCurrentTest = expectedExchanges;
+  }
 
-        return verifyRequest(actualRequest, currentExchange.request).then(
-            res => {
-                httpConversation.exchanges.push(new messy.HttpExchange({
-                    request: actualRequest,
-                    response: mockResponse
-                }));
-                const response = new global.Response(mockResponse.decodedBody, {
-                    status: mockResponse.statusLine.statusCode,
-                    statusText: mockResponse.statusLine.statusMessage,
-                    headers: mockResponse.headers.valuesByName
-                });
+  const originalFetch = global.fetch;
+  const restoreFetch = () => (global.fetch = originalFetch);
+  const httpConversation = new messy.HttpConversation();
 
-                return response;
-            },
-            () => {
-                // the request didn't match, so we create a failing response to
-                // break the code asap
-                const error = new TypeError('Network request failed');
+  mockDefinitionForTheCurrentTest = processMockDefinitions(
+    mockDefinitionForTheCurrentTest
+  );
 
-                httpConversation.exchanges.push(new messy.HttpExchange({
-                    request: actualRequest,
-                    response: mockResponse
-                }));
-
-                throw error;
-            }
-        );
+  let exchangeIndex = 0;
+  function getNextExchange() {
+    const exchange = mockDefinitionForTheCurrentTest[exchangeIndex] || {};
+    exchangeIndex += 1;
+    return {
+      request: exchange.request,
+      response: exchange.response
     };
+  }
 
-    if (promiseFactory) {
-        const promise = promiseFactory(); // TODO: handle throws
+  global.fetch = (url, opts) => {
+    mockDefinitionForTheCurrentTest = processMockDefinitions(
+      mockDefinitionForTheCurrentTest
+    );
 
-        if (!promise || typeof promise.then !== 'function') {
-            restoreFetch();
-            throw new Error('fetchception: You must return a promise from the supplied function.');
-        }
-        resolveNext = false;
-        return expect.promise(() => promise)
-            .then(
-                () => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation),
-                (err) => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation, err)
-            )
-            .finally(() => restoreFetch());
-    } else {
-        promiseForAfterEach = expectWithoutFootgunProtection(function () {
-            return expect.promise((resolve, reject) => {
-                resolveNext = resolve;
-            });
-        }, 'not to error').then(
-            () => verifyConversation(mockDefinitionForTheCurrentTest, httpConversation)
-        )
-        .finally(() => restoreFetch());
+    const currentExchange = getNextExchange();
+    const actualRequest = createActualRequestModel(url, opts);
+    const mockResponse = createMockResponse(currentExchange.response);
+
+    return verifyRequest(actualRequest, currentExchange.request).then(
+      res => {
+        httpConversation.exchanges.push(
+          new messy.HttpExchange({
+            request: actualRequest,
+            response: mockResponse
+          })
+        );
+        const response = new global.Response(mockResponse.decodedBody, {
+          status: mockResponse.statusLine.statusCode,
+          statusText: mockResponse.statusLine.statusMessage,
+          headers: mockResponse.headers.valuesByName
+        });
+
+        return response;
+      },
+      () => {
+        // the request didn't match, so we create a failing response to
+        // break the code asap
+        const error = new TypeError("Network request failed");
+
+        httpConversation.exchanges.push(
+          new messy.HttpExchange({
+            request: actualRequest,
+            response: mockResponse
+          })
+        );
+
+        throw error;
+      }
+    );
+  };
+
+  if (promiseFactory) {
+    const promise = promiseFactory(); // TODO: handle throws
+
+    if (!promise || typeof promise.then !== "function") {
+      restoreFetch();
+      throw new Error(
+        "fetchception: You must return a promise from the supplied function."
+      );
     }
+    resolveNext = false;
+    return expect
+      .promise(() => promise)
+      .then(
+        () =>
+          verifyConversation(mockDefinitionForTheCurrentTest, httpConversation),
+        err =>
+          verifyConversation(
+            mockDefinitionForTheCurrentTest,
+            httpConversation,
+            err
+          )
+      )
+      .finally(() => restoreFetch());
+  } else {
+    promiseForAfterEach = expectWithoutFootgunProtection(function() {
+      return expect.promise((resolve, reject) => {
+        resolveNext = resolve;
+      });
+    }, "not to error")
+      .then(() =>
+        verifyConversation(mockDefinitionForTheCurrentTest, httpConversation)
+      )
+      .finally(() => restoreFetch());
+  }
 }
 
 module.exports = fetchception;
