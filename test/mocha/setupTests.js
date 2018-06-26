@@ -1,6 +1,7 @@
 // create jsdom environment
-const document = require('jsdom').jsdom();
-const window = document.defaultView;
+const { JSDOM } = require("jsdom");
+const dom = new JSDOM(`<!DOCTYPE html>`);
+const window = dom.window;
 
 // Copy over all properties from window that do not yet exist on nodes global
 // over to the global object.
