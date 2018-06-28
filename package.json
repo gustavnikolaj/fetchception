@@ -22,7 +22,7 @@
     "jest": "^23.2.0",
     "jsdom": "^11.11.0",
     "mocha": "5.2.0",
-    "prettier": "^1.13.6",
+    "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
     "unexpected": "10.38.0",
     "whatwg-fetch": "2.0.4"
