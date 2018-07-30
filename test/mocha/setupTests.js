@@ -1,6 +1,8 @@
 // create jsdom environment
 const { JSDOM } = require("jsdom");
-const dom = new JSDOM(`<!DOCTYPE html>`);
+const dom = new JSDOM(`<!DOCTYPE html>`, {
+  url: "http://localhost"
+});
 const window = dom.window;
 
 global.URLSearchParams = window.URLSearchParams;
