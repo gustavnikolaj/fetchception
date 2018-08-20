@@ -1,5 +1,6 @@
 # fetchception
 
+[![npm version](https://badge.fury.io/js/fetchception.svg)](https://www.npmjs.com/package/fetchception)
 [![Build Status](https://travis-ci.org/gustavnikolaj/fetchception.svg?branch=master)](https://travis-ci.org/gustavnikolaj/fetchception)
 
 Mock out network traffic from `fetch` in tests. Experiment based on idea from
