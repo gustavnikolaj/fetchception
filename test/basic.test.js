@@ -374,17 +374,18 @@ it("should allow specifying the expected query string via the `query` option", f
       "HTTP/1.1 200 OK\n" +
       "to satisfy { exchanges: [ { request: ..., response: 200 } ] }\n" +
       "\n" +
-      "GET /api/bar?foo%5B0%5D=bar&foo%5B1%5D=baz // query should satisfy { foo: [ 'bar', 'quux' ] }\n" +
-      "                                           //\n" +
-      "                                           // {\n" +
-      "                                           //   foo: [\n" +
-      "                                           //     'bar',\n" +
-      "                                           //     'baz' // should equal 'quux'\n" +
-      "                                           //           //\n" +
-      "                                           //           // -baz\n" +
-      "                                           //           // +quux\n" +
-      "                                           //   ]\n" +
-      "                                           // }\n" +
+      "GET /api/bar?foo%5B0%5D=bar&foo%5B1%5D=baz\n" +
+      "// query should satisfy { foo: [ 'bar', 'quux' ] }\n" +
+      "//\n" +
+      "// {\n" +
+      "//   foo: [\n" +
+      "//     'bar',\n" +
+      "//     'baz' // should equal 'quux'\n" +
+      "//           //\n" +
+      "//           // -baz\n" +
+      "//           // +quux\n" +
+      "//   ]\n" +
+      "// }\n" +
       "\n" +
       "\n" +
       "HTTP/1.1 200 OK"
