@@ -24,7 +24,7 @@
     "mocha": "5.2.0",
     "prettier": "^1.14.2",
     "rimraf": "^2.6.2",
-    "unexpected": "10.38.0",
+    "unexpected": "10.39.0",
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
