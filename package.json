@@ -25,7 +25,7 @@
     "prettier": "^1.14.2",
     "rimraf": "^2.6.2",
     "unexpected": "10.39.0",
-    "whatwg-fetch": "2.0.4"
+    "whatwg-fetch": "3.0.0"
   },
   "dependencies": {
     "magicpen-media": "1.5.1",
