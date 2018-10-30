@@ -11,7 +11,9 @@
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
     "test-jest": "jest --config test/jest/jest.config.js"
   },
-  "keywords": [],
+  "keywords": [
+
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -20,7 +22,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-prettier": "^3.0.0",
     "jest": "^23.6.0",
-    "jsdom": "^12.2.0",
+    "jsdom": "^13.0.0",
     "mocha": "5.2.0",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
