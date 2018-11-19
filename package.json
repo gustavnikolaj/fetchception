@@ -23,14 +23,14 @@
     "eslint-plugin-prettier": "^3.0.0",
     "jest": "^23.6.0",
     "jsdom": "^13.0.0",
-    "mocha": "5.2.0",
+    "mocha": "^5.2.0",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
-    "unexpected": "10.39.2",
-    "whatwg-fetch": "3.0.0"
+    "unexpected": "^10.39.2",
+    "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
-    "magicpen-media": "1.5.1",
+    "magicpen-media": "^1.5.1",
     "messy": "^6.16.0",
     "unexpected-messy": "^8.1.0"
   }
