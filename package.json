@@ -30,7 +30,6 @@
     "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
-    "magicpen-media": "^1.5.1",
     "messy": "^6.16.0",
     "unexpected-messy": "^8.1.0"
   }
