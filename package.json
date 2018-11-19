@@ -11,9 +11,7 @@
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
     "test-jest": "jest --config test/jest/jest.config.js"
   },
-  "keywords": [
-
-  ],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
