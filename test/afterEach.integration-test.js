@@ -1,5 +1,5 @@
 /*global afterAll, beforeAll, jasmine*/
-const expect = require("unexpected");
+const expect = require("unexpected").clone();
 const pathModule = require("path");
 const childProcess = require("child_process");
 
