@@ -11,7 +11,9 @@
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
     "test-jest": "jest --config test/jest/jest.config.js"
   },
-  "keywords": [],
+  "keywords": [
+
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -24,7 +26,7 @@
     "mocha": "^5.2.0",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
-    "unexpected": "^10.39.2",
+    "unexpected": "^11.0.0",
     "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
