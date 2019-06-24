@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "messy": "^6.16.0",
-    "unexpected-messy": "^8.1.0"
+    "unexpected-messy": "^9.0.0"
   }
 }
