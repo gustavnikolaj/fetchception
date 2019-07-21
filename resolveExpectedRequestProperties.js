@@ -30,7 +30,7 @@ module.exports = function resolveExpectedRequestProperties(
     expectedRequestProperties = {};
   }
   if (/^https?:\/\//.test(expectedRequestProperties.url)) {
-    var urlObj = urlModule.parse(expectedRequestProperties.url);
+    var urlObj = new urlModule.URL(expectedRequestProperties.url);
     expectedRequestProperties.headers = expectedRequestProperties.headers || {};
     if (
       Object.keys(expectedRequestProperties.headers).every(function(key) {
@@ -51,7 +51,7 @@ module.exports = function resolveExpectedRequestProperties(
     ) {
       expectedRequestProperties.encrypted = true;
     }
-    expectedRequestProperties.url = urlObj.path;
+    expectedRequestProperties.url = urlObj.pathname + urlObj.search;
   }
 
   var expectedRequestBody = expectedRequestProperties.body;

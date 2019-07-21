@@ -26,7 +26,7 @@ it('should cleanly mock out fetch in the test', () => fetchception([
     return fetch('/api/foo')
         .then(res => res.json())
         .then(res => {
-            assert.equal(res.foo, 'bar');
+            assert.strictEqual(res.foo, 'bar');
         });
 }));
 ```
