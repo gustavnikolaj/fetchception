@@ -1,4 +1,4 @@
-/*global afterAll, beforeAll, jasmine*/
+/* global afterAll, beforeAll, jasmine */
 const expect = require("unexpected").clone();
 const pathModule = require("path");
 const childProcess = require("child_process");
@@ -35,28 +35,34 @@ describe("in afterEach mode", function() {
       };
       const tmpFileName = pathModule.resolve(
         tmpDir,
-        "fetchception." + Math.round(10000000 * Math.random()) + ".test.js"
+        `fetchception.${Math.round(10000000 * Math.random())}.test.js`
       );
       let testCommand;
       if (isMocha) {
-        testCommand =
-          process.argv[0] +
-          " " +
-          pathModule.resolve(__dirname, "..", "node_modules", ".bin", "mocha") +
-          " --require " +
-          pathModule.resolve(__dirname, "mocha", "setupTests.js") +
-          " " +
-          tmpFileName;
+        testCommand = `${process.argv[0]} ${pathModule.resolve(
+          __dirname,
+          "..",
+          "node_modules",
+          ".bin",
+          "mocha"
+        )} --require ${pathModule.resolve(
+          __dirname,
+          "mocha",
+          "setupTests.js"
+        )} ${tmpFileName}`;
       } else {
         // jest
-        testCommand =
-          process.argv[0] +
-          " " +
-          pathModule.resolve(__dirname, "..", "node_modules", ".bin", "jest") +
-          " --config " +
-          pathModule.resolve(__dirname, "jest", "jest.config.js") +
-          " " +
-          tmpFileName;
+        testCommand = `${process.argv[0]} ${pathModule.resolve(
+          __dirname,
+          "..",
+          "node_modules",
+          ".bin",
+          "jest"
+        )} --config ${pathModule.resolve(
+          __dirname,
+          "jest",
+          "jest.config.js"
+        )} ${tmpFileName}`;
       }
 
       return fs
