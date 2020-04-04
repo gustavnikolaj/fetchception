@@ -73,16 +73,16 @@ it("should pass with a basic mock", () =>
         request: "/api/foo",
         response: {
           statusCode: 200,
-          body: { foo: "bar" }
-        }
-      }
+          body: { foo: "bar" },
+        },
+      },
     ],
     () => {
       return fetch("/api/foo")
-        .then(res => res.json())
-        .then(res =>
+        .then((res) => res.json())
+        .then((res) =>
           expect(res, "to equal", {
-            foo: "bar"
+            foo: "bar",
           })
         );
     }
@@ -94,15 +94,15 @@ it("should allow passing a single exchange pair directly", () =>
       request: "/api/foo",
       response: {
         statusCode: 200,
-        body: { foo: "bar" }
-      }
+        body: { foo: "bar" },
+      },
     },
     () => {
       return fetch("/api/foo")
-        .then(res => res.json())
-        .then(res =>
+        .then((res) => res.json())
+        .then((res) =>
           expect(res, "to equal", {
-            foo: "bar"
+            foo: "bar",
           })
         );
     }
@@ -129,7 +129,7 @@ it("should fail when request is not matching", () => {
       "             // +GET /api/foo",
       "",
       "",
-      "HTTP/1.1 200 OK"
+      "HTTP/1.1 200 OK",
     ].join("\n")
   );
   // return fetchception(
@@ -144,7 +144,7 @@ it("should fail when all requests are not made", () => {
       fetchception(
         [
           { request: "/api/bar", response: { statusCode: 200 } },
-          { request: "/api/foo", response: { statusCode: 200 } }
+          { request: "/api/foo", response: { statusCode: 200 } },
         ],
         () => fetch("/api/bar")
       ),
@@ -169,7 +169,7 @@ it("should fail when all requests are not made", () => {
       "// missing:",
       "// GET /api/foo",
       "//",
-      "// 200"
+      "// 200",
     ].join("\n")
   );
 });
@@ -200,7 +200,7 @@ it("should fail when more requests are made", () => {
       "// should be removed:",
       "// GET /api/bar",
       "//",
-      "// HTTP/1.1 200 OK"
+      "// HTTP/1.1 200 OK",
     ].join("\n")
   );
 });
@@ -219,7 +219,7 @@ it("should fail if any requests are made with no exchanges defined (passed as em
       "// should be removed:",
       "// GET /api/foo",
       "//",
-      "// HTTP/1.1 200 OK"
+      "// HTTP/1.1 200 OK",
     ].join("\n")
   );
 });
@@ -238,7 +238,7 @@ it("should fail if any requests are made with no exchanges defined (passed as un
       "// should be removed:",
       "// GET /api/foo",
       "//",
-      "// HTTP/1.1 200 OK"
+      "// HTTP/1.1 200 OK",
     ].join("\n")
   );
 });
@@ -257,7 +257,7 @@ it("should fail if any requests are made with no exchanges defined (shorthand)",
       "// should be removed:",
       "// GET /api/foo",
       "//",
-      "// HTTP/1.1 200 OK"
+      "// HTTP/1.1 200 OK",
     ].join("\n")
   );
 });
@@ -266,24 +266,24 @@ it("should accept a statusCode as response shorthand", () =>
   fetchception(
     {
       request: "GET /foo",
-      response: 500
+      response: 500,
     },
     () => {
       return expect(
-        () => fetch("/foo").then(res => expect(res.status, "to equal", 500)),
+        () => fetch("/foo").then((res) => expect(res.status, "to equal", 500)),
         "to be fulfilled"
       );
     }
   ));
 
-it("should allow specifying an application/json response by passing the body as an object", function() {
+it("should allow specifying an application/json response by passing the body as an object", function () {
   return expect(
     () =>
       fetchception(
         [{ request: "/api/foo", response: { body: { foo: 123 } } }],
         () =>
           fetch("/api/foo")
-            .then(res => {
+            .then((res) => {
               expect(
                 res.headers.get("Content-Type"),
                 "to equal",
@@ -291,7 +291,7 @@ it("should allow specifying an application/json response by passing the body as 
               );
               return res.json();
             })
-            .then(res => {
+            .then((res) => {
               expect(res, "to equal", { foo: 123 });
             })
       ),
@@ -300,7 +300,7 @@ it("should allow specifying an application/json response by passing the body as 
 });
 
 // Test indirectly by inspecting the error message:
-it("should allow specifying an expected application/json request by passing the body as an object", function() {
+it("should allow specifying an expected application/json request by passing the body as an object", function () {
   return expect(
     () =>
       fetchception(
@@ -308,7 +308,7 @@ it("should allow specifying an expected application/json request by passing the 
         () =>
           fetch("/api/bar", {
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ foo: 123 })
+            body: JSON.stringify({ foo: 123 }),
           })
       ),
     "to error",
@@ -333,7 +333,7 @@ it("should allow specifying an expected application/json request by passing the 
   );
 });
 
-it("should allow specifying an already serialized JSON request body as a string", function() {
+it("should allow specifying an already serialized JSON request body as a string", function () {
   return expect(
     () =>
       fetchception(
@@ -342,16 +342,16 @@ it("should allow specifying an already serialized JSON request body as a string"
             request: "/api/foo",
             response: {
               headers: { "Content-Type": "application/json" },
-              body: '{"foo":   123}'
-            }
-          }
+              body: '{"foo":   123}',
+            },
+          },
         ],
         () =>
           fetch("/api/foo")
-            .then(res => res.json())
-            .then(res =>
+            .then((res) => res.json())
+            .then((res) =>
               expect(res, "to equal", {
-                foo: 123
+                foo: 123,
               })
             )
       ),
@@ -360,7 +360,7 @@ it("should allow specifying an already serialized JSON request body as a string"
 });
 
 // Test indirectly by inspecting the error message:
-it("should allow specifying the expected query string via the `query` option", function() {
+it("should allow specifying the expected query string via the `query` option", function () {
   return expect(
     () =>
       fetchception(
@@ -392,7 +392,7 @@ it("should allow specifying the expected query string via the `query` option", f
   );
 });
 
-it("should allow specifying the expected method as part of the request shorthand", function() {
+it("should allow specifying the expected method as part of the request shorthand", function () {
   return expect(
     () =>
       fetchception([{ request: "POST /api/foo", response: 200 }], () =>
@@ -402,7 +402,7 @@ it("should allow specifying the expected method as part of the request shorthand
   );
 });
 
-it("should allow specifying the expected method as part of the request url", function() {
+it("should allow specifying the expected method as part of the request url", function () {
   return expect(
     () =>
       fetchception([{ request: { url: "POST /api/foo" }, response: 200 }], () =>
@@ -412,16 +412,16 @@ it("should allow specifying the expected method as part of the request url", fun
   );
 });
 
-describe("when matching the url with an expect.it", function() {
-  it("should succeed", function() {
+describe("when matching the url with an expect.it", function () {
+  it("should succeed", function () {
     return expect(
       () =>
         fetchception(
           [
             {
               request: { url: expect.it("to begin with", "/api/foo") },
-              response: 200
-            }
+              response: 200,
+            },
           ],
           () => fetch("/api/foo/bar", { method: "POST" })
         ),
@@ -429,15 +429,15 @@ describe("when matching the url with an expect.it", function() {
     );
   });
 
-  it("should fail with a diff", function() {
+  it("should fail with a diff", function () {
     return expect(
       () =>
         fetchception(
           [
             {
               request: { url: expect.it("to begin with", "/api/bar") },
-              response: 200
-            }
+              response: 200,
+            },
           ],
           () => fetch("/api/foo", { method: "POST" })
         ),
@@ -461,64 +461,64 @@ describe("when matching the url with an expect.it", function() {
   });
 });
 
-it("should mock out a single request and succeed when it is performed", function() {
+it("should mock out a single request and succeed when it is performed", function () {
   fetchception({
     request: "GET /api/foo",
-    response: 200
+    response: 200,
   });
 
   return fetch("/api/foo");
 });
 
-it("should mock out two requests given in separate fetchception calls and succeed when they are performed", function() {
+it("should mock out two requests given in separate fetchception calls and succeed when they are performed", function () {
   fetchception({
     request: "GET /api/foo",
-    response: 200
+    response: 200,
   });
 
   fetchception({
     request: "GET /api/bar",
-    response: 200
+    response: 200,
   });
 
   return fetch("/api/foo").then(() => fetch("/api/bar"));
 });
 
-it("should mock out two requests given as an array and succeed when they are performed", function() {
+it("should mock out two requests given as an array and succeed when they are performed", function () {
   fetchception([
     {
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     },
     {
       request: "GET /api/bar",
-      response: 200
-    }
+      response: 200,
+    },
   ]);
 
   return fetch("/api/foo").then(() => fetch("/api/bar"));
 });
 
-it("should succeed", function() {
+it("should succeed", function () {
   return fetchception(
     {
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     },
     () => fetch("/api/foo")
   );
 });
 
-it("should succeed when a single function is passed and it does not perform any HTTP requests", function() {
+it("should succeed when a single function is passed and it does not perform any HTTP requests", function () {
   return fetchception(() => Promise.resolve());
 });
 
-it("should fail when no HTTP requests are made and there is a one mocked out", function() {
+it("should fail when no HTTP requests are made and there is a one mocked out", function () {
   return expect(
     fetchception(
       {
         request: "GET /api/foo",
-        response: 200
+        response: 200,
       },
       () => Promise.resolve()
     ),
@@ -533,14 +533,14 @@ it("should fail when no HTTP requests are made and there is a one mocked out", f
   );
 });
 
-it("should fail when no HTTP requests are made and there is a one mocked out (given as an array)", function() {
+it("should fail when no HTTP requests are made and there is a one mocked out (given as an array)", function () {
   return expect(
     fetchception(
       [
         {
           request: "GET /api/foo",
-          response: 200
-        }
+          response: 200,
+        },
       ],
       () => Promise.resolve()
     ),
@@ -555,49 +555,49 @@ it("should fail when no HTTP requests are made and there is a one mocked out (gi
   );
 });
 
-describe("when queueing up mock traffic before the promise factory is invoked", function() {
-  it("should succeed", function() {
+describe("when queueing up mock traffic before the promise factory is invoked", function () {
+  it("should succeed", function () {
     fetchception({
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     });
 
     return fetchception([], () => fetch("/api/foo"));
   });
 
-  it("should succeed when queueing up twice", function() {
+  it("should succeed when queueing up twice", function () {
     fetchception({
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     });
 
     fetchception({
       request: "GET /api/bar",
-      response: 200
+      response: 200,
     });
 
     return fetchception(() => fetch("/api/foo").then(() => fetch("/api/bar")));
   });
 
-  it("should succeed when additional traffic is passed to the fetchception call that launches the promise factory", function() {
+  it("should succeed when additional traffic is passed to the fetchception call that launches the promise factory", function () {
     fetchception({
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     });
 
     return fetchception(
       {
         request: "GET /api/bar",
-        response: 200
+        response: 200,
       },
       () => fetch("/api/foo").then(() => fetch("/api/bar"))
     );
   });
 
-  it("should fail with a diff", function() {
+  it("should fail with a diff", function () {
     fetchception({
       request: "GET /api/foo",
-      response: 200
+      response: 200,
     });
     return expect(
       fetchception(() => fetch("/api/bar")),
@@ -623,7 +623,7 @@ it("should support absolute urls", () => {
   return expect(() => {
     return fetchception(
       {
-        request: "GET https://pfg.tools/api/1?foo=1"
+        request: "GET https://pfg.tools/api/1?foo=1",
       },
       () => {
         return fetch("https://pfg.tools/api/1?foo=1");

@@ -8,7 +8,7 @@ if (typeof jasmine !== "undefined") {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000;
 }
 
-describe("in afterEach mode", function() {
+describe("in afterEach mode", function () {
   const fs = expect.promise.promisifyAll(require("fs"));
   const rimrafAsync = expect.promise.promisify(require("rimraf"));
   const tmpDir = pathModule.resolve(__dirname, "..", "tmp");
@@ -30,7 +30,7 @@ describe("in afterEach mode", function() {
       expect.errorMode = "nested";
       const isMocha = expect.alternations[0] === "mocha";
       const code = subject.toString().replace(/^[^{]+\{|\}\s*$/g, "");
-      expect.subjectOutput = function(output) {
+      expect.subjectOutput = function (output) {
         output.code(code, "javascript");
       };
       const tmpFileName = pathModule.resolve(
@@ -68,7 +68,7 @@ describe("in afterEach mode", function() {
       return fs
         .writeFileAsync(tmpFileName, preamble + code, "utf-8")
         .then(() =>
-          expect.promise.fromNode(cb =>
+          expect.promise.fromNode((cb) =>
             childProcess.exec(testCommand, cb.bind(null, null))
           )
         )
@@ -77,11 +77,11 @@ describe("in afterEach mode", function() {
     }
   );
 
-  it("should succeed when the correct HTTP request is made", function() {
+  it("should succeed when the correct HTTP request is made", function () {
     return expect(
       () => {
         /* eslint-disable */
-        it("should foo", function() {
+        it("should foo", function () {
           fetchception({ request: "GET /", response: 200 });
           return fetch("/");
         });
@@ -92,11 +92,11 @@ describe("in afterEach mode", function() {
     ).and("when run through jest to contain", "✓ should foo");
   });
 
-  it("should fail with a diff when too few requests are made", function() {
+  it("should fail with a diff when too few requests are made", function () {
     return expect(
       () => {
         /* eslint-disable */
-        it("should foo", function() {
+        it("should foo", function () {
           fetchception({ request: "GET /", response: 200 });
         });
         /* eslint-enable */
@@ -109,15 +109,15 @@ describe("in afterEach mode", function() {
     );
   });
 
-  describe("when the fetchception function is called multiple times", function() {
-    it("should queue up more expected requests", function() {
+  describe("when the fetchception function is called multiple times", function () {
+    it("should queue up more expected requests", function () {
       return expect(
         () => {
           /* eslint-disable */
-          it("should foo", function() {
+          it("should foo", function () {
             fetchception({ request: "GET /", response: 200 });
             fetchception({ request: "GET /foo", response: 200 });
-            return fetch("/").then(function() {
+            return fetch("/").then(function () {
               return fetch("/foo");
             });
           });
@@ -128,13 +128,13 @@ describe("in afterEach mode", function() {
       ).and("when run through jest to contain", "✓ should foo");
     });
 
-    it("should queue up more expected requests after some have been exercised", function() {
+    it("should queue up more expected requests after some have been exercised", function () {
       return expect(
         () => {
           /* eslint-disable */
-          it("should foo", function() {
+          it("should foo", function () {
             fetchception({ request: "GET /", response: 200 });
-            return fetch("/").then(function() {
+            return fetch("/").then(function () {
               fetchception({ request: "GET /foo", response: 200 });
               return fetch("/foo");
             });
@@ -146,25 +146,25 @@ describe("in afterEach mode", function() {
       ).and("when run through jest to contain", "✓ should foo");
     });
 
-    it("should process short hand request syntax in afterEach mode.", function() {
+    it("should process short hand request syntax in afterEach mode.", function () {
       return expect(
         () => {
           /* eslint-disable */
-          beforeEach(function() {
+          beforeEach(function () {
             fetchception();
           });
 
-          it("should foo", function() {
+          it("should foo", function () {
             fetchception([
               {
                 request: "GET https://pfg.tools/api/1?PageSize=10&foo=1",
                 response: {
                   headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                   },
-                  body: [1]
-                }
-              }
+                  body: [1],
+                },
+              },
             ]);
 
             return fetch("https://pfg.tools/api/1?PageSize=10&foo=1");
@@ -177,11 +177,11 @@ describe("in afterEach mode", function() {
     });
   });
 
-  it("should fail with a diff when a request does not match the mocked out traffic", function() {
+  it("should fail with a diff when a request does not match the mocked out traffic", function () {
     return expect(
       () => {
         /* eslint-disable */
-        it("should foo", function() {
+        it("should foo", function () {
           fetchception({ request: "GET /foo", response: 200 });
           return fetch("/bar");
         });
@@ -199,16 +199,16 @@ describe("in afterEach mode", function() {
     ).and("when run through jest to contain", "GET /bar // should be GET /foo");
   });
 
-  it("should fail with a diff the first test out of two fails", function() {
+  it("should fail with a diff the first test out of two fails", function () {
     return expect(
       () => {
         /* eslint-disable */
-        it("should foo", function() {
+        it("should foo", function () {
           fetchception({ request: "GET /foo", response: 200 });
           return fetch("/bar");
         });
 
-        it("should bar", function() {
+        it("should bar", function () {
           fetchception({ request: "GET /foo", response: 200 });
           return fetch("/foo");
         });
@@ -226,16 +226,16 @@ describe("in afterEach mode", function() {
     ).and("when run through jest to contain", "GET /bar // should be GET /foo");
   });
 
-  it("should fail with a diff the second test out of two fails", function() {
+  it("should fail with a diff the second test out of two fails", function () {
     return expect(
       () => {
         /* eslint-disable */
-        it("should bar", function() {
+        it("should bar", function () {
           fetchception({ request: "GET /foo", response: 200 });
           return fetch("/foo");
         });
 
-        it("should foo", function() {
+        it("should foo", function () {
           fetchception({ request: "GET /foo", response: 200 });
           return fetch("/bar");
         });

@@ -1,20 +1,18 @@
 const http = require("http");
 const messy = require("messy");
-const expect = require("unexpected")
-  .clone()
-  .use(require("unexpected-messy"));
+const expect = require("unexpected").clone().use(require("unexpected-messy"));
 // TODO: Use the hopefully now-upstreamed version of this instead.
 const resolveExpectedRequestProperties = require("./resolveExpectedRequestProperties");
 
 var expectWithoutFootgunProtection = expect.clone();
 // Disable the footgun protection of our Unexpected clone:
-expectWithoutFootgunProtection.notifyPendingPromise = function() {};
+expectWithoutFootgunProtection.notifyPendingPromise = function () {};
 
 function processMockDefinitions(mockDefinitions) {
-  return mockDefinitions.map(function(mockDef) {
+  return mockDefinitions.map(function (mockDef) {
     return {
       request: resolveExpectedRequestProperties(mockDef.request),
-      response: mockDef.response
+      response: mockDef.response,
     };
   });
 }
@@ -26,7 +24,7 @@ var afterEachRegistered = false;
 function ensureAfterEachIsRegistered() {
   if (!afterEachRegistered && typeof afterEach === "function") {
     afterEachRegistered = true;
-    afterEach(function() {
+    afterEach(function () {
       if (resolveNext) {
         resolveNext();
         resolveNext = undefined;
@@ -54,12 +52,12 @@ function createMockResponse(responseProperties) {
     if (responseProperties.headers) {
       if (
         !Object.keys(responseProperties.headers).some(
-          headerName => headerName.toLowerCase() === "content-type"
+          (headerName) => headerName.toLowerCase() === "content-type"
         )
       ) {
         responseProperties.headers = Object.assign(
           {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           responseProperties.headers
         );
@@ -91,12 +89,12 @@ function createActualRequestModel(url, opts) {
     if (requestProperties.headers) {
       if (
         !Object.keys(requestProperties.headers).some(
-          headerName => headerName.toLowerCase() === "content-type"
+          (headerName) => headerName.toLowerCase() === "content-type"
         )
       ) {
         requestProperties.headers = Object.assign(
           {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           requestProperties.headers
         );
@@ -121,7 +119,7 @@ function verifyRequest(actualRequest, expectedRequest) {
 
 function verifyConversation(expectedExchanges, actualConversation, err) {
   return expect(actualConversation, "to satisfy", {
-    exchanges: expectedExchanges
+    exchanges: expectedExchanges,
   }).then(() => {
     if (err) {
       // The conversations matched so we will rethrow the error
@@ -156,7 +154,7 @@ function fetchception(expectedExchanges, promiseFactory) {
   ) {
     expectedExchanges = [expectedExchanges];
   }
-  expectedExchanges = expectedExchanges.map(expectedExchange => {
+  expectedExchanges = expectedExchanges.map((expectedExchange) => {
     // FIXME: Should be supported directly by messy
     if (
       expectedExchange.request &&
@@ -171,7 +169,7 @@ function fetchception(expectedExchanges, promiseFactory) {
         fixedRequest.url = matchMethodInUrl[2];
         expectedExchange = {
           request: fixedRequest,
-          response: expectedExchange.response
+          response: expectedExchange.response,
         };
       }
     }
@@ -205,7 +203,7 @@ function fetchception(expectedExchanges, promiseFactory) {
     exchangeIndex += 1;
     return {
       request: exchange.request,
-      response: exchange.response
+      response: exchange.response,
     };
   }
 
@@ -219,17 +217,17 @@ function fetchception(expectedExchanges, promiseFactory) {
     const mockResponse = createMockResponse(currentExchange.response);
 
     return verifyRequest(actualRequest, currentExchange.request).then(
-      res => {
+      (res) => {
         httpConversation.exchanges.push(
           new messy.HttpExchange({
             request: actualRequest,
-            response: mockResponse
+            response: mockResponse,
           })
         );
         const response = new global.Response(mockResponse.decodedBody, {
           status: mockResponse.statusLine.statusCode,
           statusText: mockResponse.statusLine.statusMessage,
-          headers: mockResponse.headers.valuesByName
+          headers: mockResponse.headers.valuesByName,
         });
 
         return response;
@@ -242,7 +240,7 @@ function fetchception(expectedExchanges, promiseFactory) {
         httpConversation.exchanges.push(
           new messy.HttpExchange({
             request: actualRequest,
-            response: mockResponse
+            response: mockResponse,
           })
         );
 
@@ -266,7 +264,7 @@ function fetchception(expectedExchanges, promiseFactory) {
       .then(
         () =>
           verifyConversation(mockDefinitionForTheCurrentTest, httpConversation),
-        err =>
+        (err) =>
           verifyConversation(
             mockDefinitionForTheCurrentTest,
             httpConversation,
@@ -275,7 +273,7 @@ function fetchception(expectedExchanges, promiseFactory) {
       )
       .finally(() => restoreFetch());
   } else {
-    promiseForAfterEach = expectWithoutFootgunProtection(function() {
+    promiseForAfterEach = expectWithoutFootgunProtection(function () {
       return expect.promise((resolve, reject) => {
         resolveNext = resolve;
       });
