@@ -11,24 +11,28 @@ modelling, inspection and diffing of HTTP conversations from
 [unexpected-messy](https://github.com/unexpectedjs/unexpected-messy).
 
 ```js
-const fetchception = require('fetchception');
-const assert = require('assert');
+const fetchception = require("fetchception");
+const assert = require("assert");
 
-it('should cleanly mock out fetch in the test', () => fetchception([
-    {
-        request: '/api/foo',
+it("should cleanly mock out fetch in the test", () =>
+  fetchception(
+    [
+      {
+        request: "/api/foo",
         response: {
-            statusCode: 200,
-            body: { foo: 'bar' }
-        }
-    }
-], () => {
-    return fetch('/api/foo')
-        .then(res => res.json())
-        .then(res => {
-            assert.strictEqual(res.foo, 'bar');
+          statusCode: 200,
+          body: { foo: "bar" },
+        },
+      },
+    ],
+    () => {
+      return fetch("/api/foo")
+        .then((res) => res.json())
+        .then((res) => {
+          assert.strictEqual(res.foo, "bar");
         });
-}));
+    }
+  ));
 ```
 
 When the test is done, the fetch global will automatically be restored.

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "coverage": "jest --config test/jest/jest.config.js --coverage",
-    "lint": "eslint . && prettier --check '**/*.js'",
-    "test": "npm run test-mocha && npm run test-jest && npm run test-integration && npm run lint",
+    "lint": "eslint . && prettier --check '**/*.{js,md}'",
+    "test": "npm run test-mocha && npm run test-jest && npm run test-integration",
     "test-integration": "mocha --opts test/mocha/mocha.integration.opts",
     "test-mocha": "mocha --opts test/mocha/mocha.opts",
     "test-jest": "jest --config test/jest/jest.config.js"
@@ -26,7 +26,7 @@
     "jest": "^25.1.0",
     "jsdom": "^16.0.1",
     "mocha": "^7.0.0",
-    "prettier": "~1.19.1",
+    "prettier": "~2.0.2",
     "rimraf": "^3.0.0",
     "unexpected": "^11.0.0",
     "whatwg-fetch": "^3.0.0"

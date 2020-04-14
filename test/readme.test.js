@@ -10,14 +10,14 @@ it("should cleanly mock out fetch in the test", () =>
         request: "/api/foo",
         response: {
           statusCode: 200,
-          body: { foo: "bar" }
-        }
-      }
+          body: { foo: "bar" },
+        },
+      },
     ],
     () => {
       return fetch("/api/foo")
-        .then(res => res.json())
-        .then(res => {
+        .then((res) => res.json())
+        .then((res) => {
           assert.strictEqual(res.foo, "bar");
         });
     }

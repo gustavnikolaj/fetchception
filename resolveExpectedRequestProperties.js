@@ -33,7 +33,7 @@ module.exports = function resolveExpectedRequestProperties(
     var urlObj = new urlModule.URL(expectedRequestProperties.url);
     expectedRequestProperties.headers = expectedRequestProperties.headers || {};
     if (
-      Object.keys(expectedRequestProperties.headers).every(function(key) {
+      Object.keys(expectedRequestProperties.headers).every(function (key) {
         return key.toLowerCase() !== "host";
       })
     ) {
@@ -61,7 +61,7 @@ module.exports = function resolveExpectedRequestProperties(
   ) {
     expectedRequestProperties.headers = expectedRequestProperties.headers || {};
     if (
-      Object.keys(expectedRequestProperties.headers).every(function(key) {
+      Object.keys(expectedRequestProperties.headers).every(function (key) {
         return key.toLowerCase() !== "content-type";
       })
     ) {

@@ -1,7 +1,7 @@
 // create jsdom environment
 const { JSDOM } = require("jsdom");
 const dom = new JSDOM(`<!DOCTYPE html>`, {
-  url: "http://localhost"
+  url: "http://localhost",
 });
 const window = dom.window;
 
@@ -11,7 +11,7 @@ global.URLSearchParams = window.URLSearchParams;
 // over to the global object.
 // Later we might want to filter some of them, but for now it seems to work just
 // fine when copying everything over like this.
-Object.keys(window).forEach(key => {
+Object.keys(window).forEach((key) => {
   if (typeof global[key] === "undefined") {
     global[key] = window[key];
   }
