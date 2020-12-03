@@ -19,8 +19,9 @@ Object.keys(window).forEach((key) => {
 
 // Setup fetch polyfill and copy the references the polyfill installs into the
 // window over into the global object.
-require("whatwg-fetch");
-global.fetch = window.fetch;
-global.Headers = window.Headers;
-global.Request = window.Request;
-global.Response = window.Response;
+const wwgFetch = require("whatwg-fetch");
+
+global.fetch = wwgFetch.fetch;
+global.Headers = wwgFetch.Headers;
+global.Request = wwgFetch.Request;
+global.Response = wwgFetch.Response;
