@@ -160,9 +160,8 @@ function fetchception(expectedExchanges, promiseFactory) {
       expectedExchange.request &&
       typeof expectedExchange.request.url === "string"
     ) {
-      const matchMethodInUrl = expectedExchange.request.url.match(
-        /^([A-Z]+) ([\s\S]*)$/
-      );
+      const matchMethodInUrl =
+        expectedExchange.request.url.match(/^([A-Z]+) ([\s\S]*)$/);
       if (matchMethodInUrl) {
         const fixedRequest = Object.assign({}, expectedExchange.request);
         fixedRequest.method = matchMethodInUrl[1];

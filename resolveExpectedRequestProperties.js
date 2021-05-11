@@ -15,9 +15,8 @@ module.exports = function resolveExpectedRequestProperties(
   }
   if (expectedRequestProperties) {
     if (typeof expectedRequestProperties.url === "string") {
-      var matchMethod = expectedRequestProperties.url.match(
-        /^([A-Z]+) ([\s\S]*)$/
-      );
+      var matchMethod =
+        expectedRequestProperties.url.match(/^([A-Z]+) ([\s\S]*)$/);
       if (matchMethod) {
         expectedRequestProperties.method =
           expectedRequestProperties.method || matchMethod[1];
