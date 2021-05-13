@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "messy": "^7.0.0",
-    "unexpected-messy": "^10.0.0"
+    "unexpected-messy": "^11.0.0"
   }
 }
